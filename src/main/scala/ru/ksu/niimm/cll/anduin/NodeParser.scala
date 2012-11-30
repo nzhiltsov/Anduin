@@ -13,7 +13,7 @@ object NodeParser {
   def extractNodes(line: String): (Context, Subject, Predicate, Range) = {
 
     val endSubject = line match {
-      case l if l.startsWith("_") => line.indexOf(" ")
+      case l if l.startsWith("_") => line.indexOf(" ")  // blank node
       case l if l.startsWith("<") => line.indexOf(">") + 1
       case _ => throw new Exception("can't process such a line")
     }
