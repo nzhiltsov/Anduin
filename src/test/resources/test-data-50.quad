@@ -1,0 +1,10 @@
+<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> <http://www.aktors.org/ontology/portal#has-volume> "72" <http://somecontext.com/1> .
+<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> <http://www.aktors.org/ontology/portal#has-title> "Complete translation of poliovirus RNA in a eukaryotic cell-free system" <http://somecontext.com/1> .
+<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> <http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> <http://somecontext.com/1> .
+<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> <http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-2> <http://somecontext.com/1> .
+<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> <http://www.aktors.org/ontology/extension#has-abstract> "Poliovirus RNA rna rna" <http://somecontext.com/1> .
+<http://eprints.rkbexplorer.com/id/caltech/person-1> <http://www.aktors.org/ontology/portal#profession> "RNA researcher" <http://somecontext.com/1> .
+<http://eprints.rkbexplorer.com/id/caltech/person-2> <http://www.aktors.org/ontology/portal#profession> "RNA researcher" <http://somecontext.com/1> .
+<http://eprints.rkbexplorer.com/id/caltech/person-2>  <http://www.aktors.org/ontology/portal#knows> _:p1 <http://somecontext.com/1> .
+_:p1 <http://www.aktors.org/ontology/portal#birthDate> "20-01-1960" <http://somecontext.com/1> .
+_:p1 <http://www.aktors.org/ontology/portal#birthDate> "20-01-1966" <http://somecontext.com/2> .
