@@ -15,26 +15,37 @@ class DocumentEntityProcessor(args: Args) extends Job(args) {
 
   def process(pipe: Pipe) = pipe.map('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
-  }.discard(('line, 'num, 'context))
+  }.discard(('line, 'num))
 
 
   val firstLevelEntities = process(lines)
 
   val secondLevelEntities =
-    firstLevelEntities.rename(('subject, 'predicate, 'object) ->
-      ('subject2, 'predicate2, 'object2))
+    firstLevelEntities.rename(('context, 'subject, 'predicate, 'object) ->
+      ('context2, 'subject2, 'predicate2, 'object2)).filter('subject2) {
+      subject: Subject => subject.startsWith("<")
+    }
+
+  val secondLevelBNodes = firstLevelEntities.rename(('context, 'subject, 'predicate, 'object) ->
+    ('context3, 'subject3, 'predicate3, 'object3)).filter('subject3) {
+    subject: Subject => subject.startsWith("_")
+  }
 
   val mergedEntities = firstLevelEntities.filter('subject) {
-    subject: Subject => !subject.startsWith("_")
+    subject: Subject => subject.startsWith("<")
   }
     .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
-    .project(('subject, 'predicate, 'object, 'object2))
-    .map(('object, 'object2) -> ('objects)) {
-    fields: (Range, Range) => if (fields._2 != null) {
-      fields._2
-    } else {
-      fields._1
-    }
+    .joinWithSmaller(('context, 'object) ->('context3, 'subject3), secondLevelBNodes, joiner = new LeftJoin)
+    .project(('subject, 'predicate, 'object, 'object2, 'object3))
+    .map(('object, 'object2, 'object3) -> ('objects)) {
+    fields: (Range, Range, Range) =>
+      if (fields._2 != null) {
+        fields._2
+      } else if (fields._3 != null) {
+        fields._3
+      } else {
+        fields._1
+      }
   }.project(('subject, 'predicate, 'objects))
 
   mergedEntities.
