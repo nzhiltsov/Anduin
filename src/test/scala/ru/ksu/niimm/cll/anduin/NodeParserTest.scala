@@ -36,5 +36,18 @@ object NodeParserTest extends Specification {
         case _ => fail("didn't extract nodes")
       }
     }
+
+    "extract nodes from ntuple" in {
+      val line = "<http://someurl> <http://www.aktors.org/ontology/portal#has-author>\t" +
+        "\"RNA researcher\" \"Top RNA researcher\" _:p1 ."
+      extractNodesFromNTuple(line) match {
+        case (s, p, o) => {
+          s mustEqual "<http://someurl>"
+          p mustEqual "<http://www.aktors.org/ontology/portal#has-author>"
+          o mustEqual "\"RNA researcher\" \"Top RNA researcher\" _:p1"
+        }
+        case _ => fail("didn't extract nodes")
+      }
+    }
   }
 }

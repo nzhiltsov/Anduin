@@ -15,7 +15,7 @@ class DocumentEntityProcessor(args: Args) extends Job(args) {
 
   def process(pipe: Pipe) = pipe.map('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
-  }.discard(('line, 'num))
+  }.discard(('line, 'offset))
 
 
   val firstLevelEntities = process(lines)
@@ -31,9 +31,11 @@ class DocumentEntityProcessor(args: Args) extends Job(args) {
     subject: Subject => subject.startsWith("_")
   }
 
-  val mergedEntities = firstLevelEntities.filter('subject) {
+  val firstLevelEntitiesWithoutBNodes = firstLevelEntities.filter('subject) {
     subject: Subject => subject.startsWith("<")
   }
+
+  val mergedEntities = firstLevelEntitiesWithoutBNodes
     .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
     .joinWithSmaller(('context, 'object) ->('context3, 'subject3), secondLevelBNodes, joiner = new LeftJoin)
     .project(('subject, 'predicate, 'object, 'object2, 'object3))
@@ -47,14 +49,14 @@ class DocumentEntityProcessor(args: Args) extends Job(args) {
         fields._1
       }
   }.project(('subject, 'predicate, 'objects))
-
-  mergedEntities.
-    groupBy(('subject, 'predicate)) {
+    .groupBy(('subject, 'predicate)) {
     _.reduce('objects -> 'objects) {
       (a: Range, b: Range) => a + " " + b
     }
   }.map('objects -> 'objects) {
     range: Range => range + " ."
   }
-    .write(Tsv(args("output")))
+
+  mergedEntities.write(Tsv(args("output")))
+
 }
