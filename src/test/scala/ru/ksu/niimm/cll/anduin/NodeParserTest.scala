@@ -39,7 +39,7 @@ object NodeParserTest extends Specification {
 
     "extract nodes from ntuple" in {
       val line = "<http://someurl> <http://www.aktors.org/ontology/portal#has-author>\t" +
-        "\"RNA researcher\" \"Top RNA researcher\" _:p1 ."
+        "\"RNA researcher\" \"Top RNA researcher\" _:p1"
       extractNodesFromNTuple(line) match {
         case (s, p, o) => {
           s mustEqual "<http://someurl>"

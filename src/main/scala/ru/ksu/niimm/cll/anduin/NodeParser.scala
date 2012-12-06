@@ -38,7 +38,7 @@ object NodeParser {
     }
     val startPredicate = line.indexOf("<", endSubject)
     val endPredicate = line.indexOf(">", startPredicate) + 1
-    val endObject = line.lastIndexOf(".")
+    val endObject = line.length
 
     val subject = line.substring(0, endSubject)
     val predicate = line.substring(startPredicate, endPredicate)
