@@ -53,10 +53,10 @@ class DocumentEntityProcessor(args: Args) extends Job(args) {
     _.reduce('objects -> 'objects) {
       (a: Range, b: Range) => a + " " + b
     }
-  }.map('objects -> 'objects) {
-    range: Range => range + " ."
   }
 
-  mergedEntities.write(Tsv(args("output")))
+  mergedEntities.groupAll {
+    _.sortBy('subject)
+  }.write(Tsv(args("output")))
 
 }
