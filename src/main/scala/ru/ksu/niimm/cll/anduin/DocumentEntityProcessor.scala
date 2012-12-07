@@ -22,13 +22,13 @@ class DocumentEntityProcessor(args: Args) extends Job(args) {
 
   val secondLevelEntities =
     firstLevelEntities.rename(('context, 'subject, 'predicate, 'object) ->
-      ('context2, 'subject2, 'predicate2, 'object2)).filter('subject2) {
-      subject: Subject => subject.startsWith("<")
+      ('context2, 'subject2, 'predicate2, 'object2)).filter(('subject2, 'object2)) {
+      fields: (Subject, Range) => fields._1.startsWith("<") && fields._2.startsWith("\"")
     }
 
   val secondLevelBNodes = firstLevelEntities.rename(('context, 'subject, 'predicate, 'object) ->
-    ('context3, 'subject3, 'predicate3, 'object3)).filter('subject3) {
-    subject: Subject => subject.startsWith("_")
+    ('context3, 'subject3, 'predicate3, 'object3)).filter(('subject3, 'object3)) {
+    fields: (Subject, Range) => fields._1.startsWith("_") && fields._2.startsWith("\"")
   }
 
   val firstLevelEntitiesWithoutBNodes = firstLevelEntities.filter('subject) {
@@ -36,8 +36,8 @@ class DocumentEntityProcessor(args: Args) extends Job(args) {
   }
 
   val mergedEntities = firstLevelEntitiesWithoutBNodes
-    .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
     .joinWithSmaller(('context, 'object) ->('context3, 'subject3), secondLevelBNodes, joiner = new LeftJoin)
+    .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
     .project(('subject, 'predicate, 'object, 'object2, 'object3))
     .map(('object, 'object2, 'object3) -> ('objects)) {
     fields: (Range, Range, Range) =>
@@ -57,6 +57,6 @@ class DocumentEntityProcessor(args: Args) extends Job(args) {
 
   mergedEntities.groupAll {
     _.sortBy('subject)
-  }.write(Tsv(args("output")))
-
+  }
+    .write(Tsv(args("output")))
 }
