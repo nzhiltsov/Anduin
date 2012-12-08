@@ -28,17 +28,19 @@ class SEMProcessorTest extends Specification with TupleConversions {
       ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
         "<http://www.aktors.org/ontology/portal#label> \"RNA researcher\" <http://somecontext.com/1> .")
     )).
-      sink[(Subject, Predicate, Range)](Tsv("outputFile")) {
+      sink[(Int, Subject, Predicate, Range)](Tsv("outputFile")) {
       outputBuffer =>
         println(outputBuffer(0))
-        println(outputBuffer(1))
+        println(outputBuffer(2))
         "output correct ntuples" in {
-          outputBuffer(0)._1 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
-          outputBuffer(0)._2 mustEqual "<http://www.aktors.org/ontology/portal#has-author>"
-          outputBuffer(0)._3 mustEqual "\"RNA researcher\""
-          outputBuffer(1)._1 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
-          outputBuffer(1)._2 mustEqual "<http://www.aktors.org/ontology/portal#label>"
-          outputBuffer(1)._3 mustEqual "\"RNA researcher\""
+          outputBuffer(0)._1 must_== 2
+          outputBuffer(0)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
+          outputBuffer(0)._3 mustEqual "<http://www.aktors.org/ontology/portal#has-author>"
+          outputBuffer(0)._4 mustEqual "\"RNA researcher\""
+          outputBuffer(2)._1 must_== 0
+          outputBuffer(2)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
+          outputBuffer(2)._3 mustEqual "<http://www.aktors.org/ontology/portal#label>"
+          outputBuffer(2)._4 mustEqual "\"RNA researcher\""
         }
     }.run.
       finish
