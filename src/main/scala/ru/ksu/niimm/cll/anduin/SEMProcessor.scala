@@ -12,7 +12,7 @@ import cascading.pipe.joiner.LeftJoin
  * <p>
  * <b>predicate_type TAB subject TAB predicate TAB objects</b>
  * </p>
- * where 'predicate_type' values are {0,1,2}
+ * where 'predicate_type' values are {0,1,2}, i.e. {nameType, attrType, outRelType}, correspondingly,
  * and 'objects' may contain more than one literals delimited with space, e.g.
  * <p>
  * <b>2	<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>	<http://www.aktors.org/ontology/portal#has-author>	"Tyson" "Johnson"</b>
