@@ -40,17 +40,16 @@ class SEMProcessor(args: Args) extends AbstractProcessor(args) {
     .joinWithSmaller(('context, 'object) ->('context3, 'subject3), secondLevelBNodes, joiner = new LeftJoin)
     .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
     .project(('subject, 'predicate, 'object, 'object2, 'object3))
-    .map(('object, 'object2, 'object3) -> (('objects, 'predicatetype))) {
-    fields: (Range, Range, Range) =>
-      if (fields._2 != null) {
-        (fields._2, 2)
-      } else if (fields._3 != null) {
-        (fields._3, 2)
+    .mapTo(('subject, 'predicate, 'object, 'object2, 'object3) ->('predicatetype, 'subject, 'predicate, 'objects)) {
+    fields: (Subject, Predicate, Range, Range, Range) =>
+      if (fields._4 != null) {
+        (2, fields._1, fields._2, fields._4)
+      } else if (fields._5 != null) {
+        (2, fields._1, fields._2, fields._5)
       } else {
-        (fields._1, 1)
+        (1, fields._1, fields._2, fields._3)
       }
   }
-    .project(('predicatetype, 'subject, 'predicate, 'objects))
     .filter('objects) {
     range: Range => !range.startsWith("_")
   }
