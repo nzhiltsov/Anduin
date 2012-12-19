@@ -15,7 +15,7 @@ class SEMProcessorTest extends JUnit4(SEMProcessorTestSpec)
 
 object SEMProcessorTestSpec extends Specification with TupleConversions {
   "SEM processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.testing.TestingSEMProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.SEMProcessor").
       arg("input", "inputFile").
       arg("output", "outputFile").
       source(TextLine("inputFile"), List(
@@ -37,10 +37,10 @@ object SEMProcessorTestSpec extends Specification with TupleConversions {
           outputBuffer(0)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
           outputBuffer(0)._3 mustEqual "<http://www.aktors.org/ontology/portal#has-author>"
           outputBuffer(0)._4 mustEqual "\"No. 1 RNA researcher\""
-          outputBuffer(2)._1 must_== 0
-          outputBuffer(2)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
-          outputBuffer(2)._3 mustEqual "<http://www.aktors.org/ontology/portal#label>"
-          outputBuffer(2)._4 mustEqual "\"No. 1 RNA researcher\""
+          outputBuffer(1)._1 must_== 0
+          outputBuffer(1)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
+          outputBuffer(1)._3 mustEqual "<http://www.aktors.org/ontology/portal#label>"
+          outputBuffer(1)._4 mustEqual "\"No. 1 RNA researcher\""
         }
     }.run.
       finish

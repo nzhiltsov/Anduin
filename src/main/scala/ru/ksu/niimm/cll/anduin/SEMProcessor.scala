@@ -1,8 +1,8 @@
 package ru.ksu.niimm.cll.anduin
 
-import com.twitter.scalding.{Tsv, Args}
+import com.twitter.scalding.{Job, TextLine, Tsv, Args}
 import ru.ksu.niimm.cll.anduin.NodeParser._
-import cascading.pipe.joiner.LeftJoin
+import cascading.pipe.joiner.InnerJoin
 
 /**
  * This processor implements aggregation of entity description with partial URI resolution according to the paper
@@ -19,58 +19,110 @@ import cascading.pipe.joiner.LeftJoin
  * </p>
  @author Nikita Zhiltsov
  */
-class SEMProcessor(args: Args) extends AbstractProcessor(args) {
-  val wordDelimiterRegex = "[^a-zA-Z]"
+class SEMProcessor(args: Args) extends Job(args) {
+  private val wordDelimiterRegex = "[^a-zA-Z]"
 
-  private val secondLevelEntities =
-    firstLevelEntities.rename(('context, 'subject, 'predicate, 'object) ->
-      ('context2, 'subject2, 'predicate2, 'object2)).filter(('subject2, 'predicate2, 'object2)) {
-      fields: (Subject, Predicate, Range) => fields._1.startsWith("<") && fields._3.startsWith("\"") && isNamePredicate(fields._2)
-    }
+  private val namePattern = "^<http.*(label|name|title)>$"
 
-  private val secondLevelBNodes = firstLevelEntities.rename(('context, 'subject, 'predicate, 'object) ->
-    ('context3, 'subject3, 'predicate3, 'object3)).filter(('subject3, 'predicate3, 'object3)) {
-    fields: (Subject, Predicate, Range) => fields._1.startsWith("_") && fields._3.startsWith("\"") && isNamePredicate(fields._2)
-  }
-
+  /**
+   * check if the predicate is 'name'-like, e.g. 'name', 'label', 'title' etc.
+   *
+   * @param predicate a predicate
+   * @return
+   */
   def isNamePredicate(predicate: Predicate): Boolean =
-    predicate.matches("^<http.*(label|name|title)>$")
+    predicate.matches(namePattern)
 
-  private val mergedEntities = firstLevelEntitiesWithoutBNodes
-    .joinWithSmaller(('context, 'object) ->('context3, 'subject3), secondLevelBNodes, joiner = new LeftJoin)
-    .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
-    .project(('subject, 'predicate, 'object, 'object2, 'object3))
-    .mapTo(('subject, 'predicate, 'object, 'object2, 'object3) ->('predicatetype, 'subject, 'predicate, 'objects)) {
-    fields: (Subject, Predicate, Range, Range, Range) =>
-      if (fields._4 != null) {
-        (2, fields._1, fields._2, fields._4)
-      } else if (fields._5 != null) {
-        (2, fields._1, fields._2, fields._5)
-      } else {
-        (1, fields._1, fields._2, fields._3)
-      }
+  private val lines = TextLine(args("input")).read
+  /**
+   * extracts the quad nodes from lines
+   */
+  private val firstLevelEntities = lines.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
+    line: String => extractNodes(line)
   }
-    .filter('objects) {
-    range: Range => !range.startsWith("_")
+  /**
+   * filters first level entities with URIs as subjects, i.e. candidates for further indexing
+   */
+  private val firstLevelEntitiesWithoutBNodes = firstLevelEntities.filter('subject) {
+    subject: Subject => subject.startsWith("<")
   }
-    .map('objects -> 'objects) {
-    range: Range =>
-      if (!range.startsWith("<")) range
-      else
-        range.split(wordDelimiterRegex).mkString("\"", " ", "\"")
+  /**
+   * filters first level entities with URIs as objects for resolution
+   */
+  private val firstLevelEntitiesWithURIsAsObjects = firstLevelEntitiesWithoutBNodes.filter('object) {
+    range: Range => range.startsWith("<")
+  }.project(('subject, 'predicate, 'object))
+  /**
+   * filters first level entities with blank nodes as object for resolution
+   */
+  private val firstLevelEntitiesWithBNodesAsObjects = firstLevelEntitiesWithoutBNodes.filter('object) {
+    range: Range => range.startsWith("_")
   }
-    .groupBy(('predicatetype, 'subject, 'predicate)) {
-    _.mkString('objects, " ")
-  }.map(('predicatetype, 'predicate) ->('predicatetype, 'predicate)) {
-    fields: (Int, Predicate) =>
-      if (fields._1 == 2) (fields._1, fields._2)
-      else if (isNamePredicate(fields._2)) (0, fields._2)
-      else (1, fields._2)
+  /**
+   * filters first level entities with literal values
+   */
+  private val firstLevelEntitiesWithLiterals = firstLevelEntitiesWithoutBNodes.filter('object) {
+    range: Range => range.startsWith("\"")
+  }.project(('subject, 'predicate, 'object)).groupBy(('subject, 'predicate)) {
+    _.mkString('object, " ")
+  }.map('predicate -> 'predicatetype) {
+    predicate: Predicate => if (isNamePredicate(predicate)) 0 else 1
   }
+  /**
+   * filters first level blank nodes
+   */
+  private val firstLevelBNodes = firstLevelEntities.filter('subject) {
+    subject: Subject => subject.startsWith("_")
+  }
+  /**
+   * filters second level entities with URIs as objects, 'name'-like predicates and literal values;
+   * merges the literal values
+   */
+  private val secondLevelEntities =
+    firstLevelEntitiesWithoutBNodes.rename(('context, 'subject, 'predicate, 'object) ->
+      ('context2, 'subject2, 'predicate2, 'object2)).project(('subject2, 'predicate2, 'object2))
+      .filter(('predicate2, 'object2)) {
+      fields: (Predicate, Range) => isNamePredicate(fields._1) && fields._2.startsWith("\"")
+    }
+      .groupBy(('subject2, 'predicate2)) {
+      _.mkString('object2, " ")
+    }
+  /**
+   * filters second level blank nodes with 'name'-like predicates and literal values; merges the literal values
+   */
+  private val secondLevelBNodes = firstLevelBNodes.rename(('context, 'subject, 'predicate, 'object) ->
+    ('context3, 'subject3, 'predicate3, 'object3)).filter(('predicate3, 'object3)) {
+    fields: (Predicate, Range) => isNamePredicate(fields._1) && fields._2.startsWith("\"")
+  }.groupBy(('context3, 'subject3, 'predicate3)) {
+    _.mkString('object3, " ")
+  }
+  /**
+   * resolves blank nodes; matching of two blank nodes makes sense, only if both the contexts are the same
+   */
+  private val entitiesWithResolvedBNodes = firstLevelEntitiesWithBNodesAsObjects
+    .joinWithSmaller(('context, 'object) ->('context3, 'subject3), secondLevelBNodes, joiner = new InnerJoin)
+    .project(('subject, 'predicate, 'object3)).rename('object3 -> 'object).map('predicate -> 'predicatetype) {
+    predicate: Predicate => 2
+  }
+  /**
+   * resolves URIs as objects across the whole data set
+   */
+  private val entitiesWithResolvedURIs = firstLevelEntitiesWithURIsAsObjects
+    .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new InnerJoin)
+    .project(('subject, 'predicate, 'object2))
+    .rename('object2 -> 'object)
+    .map('predicate -> 'predicatetype) {
+    predicate: Predicate => 2
+  }
+  /**
+   * combines all the pipes into the single final pipe
+   */
+  private val mergedEntities = firstLevelEntitiesWithLiterals ++ entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs
 
-  mergedEntities.
-    groupAll {
+  mergedEntities.groupBy(('subject, 'predicate, 'predicatetype)) {
+    _.mkString('object, " ")
+  }.project(('predicatetype, 'subject, 'predicate, 'object))
+    .groupAll {
     _.sortBy('subject)
-  }
-    .write(Tsv(args("output")))
+  }.write(Tsv(args("output")))
 }
