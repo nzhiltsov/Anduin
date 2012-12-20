@@ -1,7 +1,8 @@
 package ru.ksu.niimm.cll.anduin
 
 import com.twitter.scalding.{Job, TextLine, Tsv, Args}
-import ru.ksu.niimm.cll.anduin.NodeParser._
+import util.NodeParser
+import NodeParser._
 import cascading.pipe.joiner.InnerJoin
 
 /**
@@ -21,6 +22,7 @@ import cascading.pipe.joiner.InnerJoin
  */
 class SEMProcessor(args: Args) extends Job(args) {
   private val wordDelimiterRegex = "[^a-zA-Z]"
+  private val maxLineLength = 40000
 
   private val namePattern = "^<http.*(label|name|title)>$"
 
@@ -33,7 +35,13 @@ class SEMProcessor(args: Args) extends Job(args) {
   def isNamePredicate(predicate: Predicate): Boolean =
     predicate.matches(namePattern)
 
-  private val lines = TextLine(args("input")).read
+  /**
+   * reads raw lines and filters out too large ones
+   */
+  private val lines = TextLine(args("input")).read.filter('line) {
+    line: String =>
+      line.length < maxLineLength
+  }
   /**
    * extracts the quad nodes from lines
    */

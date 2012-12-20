@@ -1,6 +1,8 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.util
 
 /**
+ * This parser extracts quads and triples from raw lines
+ *
  * @author Nikita Zhiltsov 
  */
 object NodeParser {

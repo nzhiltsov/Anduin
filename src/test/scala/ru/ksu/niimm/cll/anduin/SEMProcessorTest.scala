@@ -3,7 +3,8 @@ package ru.ksu.niimm.cll.anduin
 import org.junit.runner.RunWith
 import org.specs.Specification
 import com.twitter.scalding._
-import ru.ksu.niimm.cll.anduin.NodeParser._
+import util.NodeParser
+import NodeParser._
 import com.twitter.scalding.TextLine
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 

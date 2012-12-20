@@ -1,8 +1,8 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.util
 
 import org.junit.runner.RunWith
 import org.specs.Specification
-import ru.ksu.niimm.cll.anduin.NodeParser._
+import NodeParser._
 import org.scalatest.junit.JUnitRunner
 
 /**
