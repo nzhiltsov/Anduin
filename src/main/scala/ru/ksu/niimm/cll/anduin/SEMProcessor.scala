@@ -63,7 +63,7 @@ class SEMProcessor(args: Args) extends Job(args) {
    */
   private val firstLevelEntitiesWithLiterals = firstLevelEntitiesWithoutBNodes.filter('object) {
     range: Range => range.startsWith("\"")
-  }.project(('subject, 'predicate, 'object)).groupBy(('subject, 'predicate)) {
+  }.project(('subject, 'predicate, 'object)).unique(('subject, 'predicate, 'object)).groupBy(('subject, 'predicate)) {
     _.mkString('object, " ")
   }.map('predicate -> 'predicatetype) {
     predicate: Predicate => if (isNamePredicate(predicate)) 0 else 1
@@ -84,6 +84,7 @@ class SEMProcessor(args: Args) extends Job(args) {
       .filter(('predicate2, 'object2)) {
       fields: (Predicate, Range) => isNamePredicate(fields._1) && fields._2.startsWith("\"")
     }
+      .unique(('subject2, 'predicate2, 'object2))
       .groupBy(('subject2, 'predicate2)) {
       _.mkString('object2, " ")
     }
