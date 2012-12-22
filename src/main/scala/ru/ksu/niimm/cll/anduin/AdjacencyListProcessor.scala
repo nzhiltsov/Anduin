@@ -1,7 +1,8 @@
 package ru.ksu.niimm.cll.anduin
 
 import com.twitter.scalding._
-import ru.ksu.niimm.cll.anduin.NodeParser._
+import util.NodeParser
+import NodeParser._
 import com.twitter.scalding.Tsv
 import com.twitter.scalding.TextLine
 
