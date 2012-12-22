@@ -43,11 +43,11 @@ class SEMProcessor(args: Args) extends Job(args) {
       line.length < maxLineLength
   }
   /**
-   * extracts the quad nodes from lines
+   * extracts the unique quad nodes from lines
    */
   private val firstLevelEntities = lines.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
-  }
+  }.unique(('context, 'subject, 'predicate, 'object))
   /**
    * filters first level entities with URIs as subjects, i.e. candidates for further indexing
    */
@@ -59,7 +59,7 @@ class SEMProcessor(args: Args) extends Job(args) {
    */
   private val firstLevelEntitiesWithURIsAsObjects = firstLevelEntitiesWithoutBNodes.filter('object) {
     range: Range => range.startsWith("<")
-  }.project(('subject, 'predicate, 'object))
+  }.project(('subject, 'predicate, 'object)).unique(('subject, 'predicate, 'object))
   /**
    * filters first level entities with blank nodes as object for resolution
    */
