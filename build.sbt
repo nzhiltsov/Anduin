@@ -25,9 +25,15 @@ libraryDependencies += "junit" % "junit" % "4.8" % "test"
 
 libraryDependencies += "net.sf.jopt-simple" % "jopt-simple" % "4.3"
 
+libraryDependencies += "org.apache.commons" % "commons-compress" % "1.4.1"
+
+libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.0.9"
+
 parallelExecution in Test := false
 
 seq(assemblySettings: _*)
+
+mainClass in (Compile, run) := Some("com.twitter.scalding.Tool")
 
 // Uncomment if you don't want to run all the tests before building assembly
 // test in assembly := {}
