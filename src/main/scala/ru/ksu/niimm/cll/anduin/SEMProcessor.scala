@@ -47,7 +47,9 @@ class SEMProcessor(args: Args) extends Job(args) {
    */
   private val firstLevelEntities = lines.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
-  }.unique(('context, 'subject, 'predicate, 'object))
+  }
+//    .unique(('context, 'subject, 'predicate, 'object))
+
   /**
    * filters first level entities with URIs as subjects, i.e. candidates for further indexing
    */
@@ -128,10 +130,12 @@ class SEMProcessor(args: Args) extends Job(args) {
    */
   private val mergedEntities = firstLevelEntitiesWithLiterals ++ entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs
 
-  mergedEntities.groupBy(('subject, 'predicate, 'predicatetype)) {
-    _.mkString('object, " ")
-  }.project(('predicatetype, 'subject, 'predicate, 'object))
+  mergedEntities
+//    .groupBy(('subject, 'predicate, 'predicatetype)) {
+//    _.mkString('object, " ")
+//  }
+    .project(('predicatetype, 'subject, 'predicate, 'object))
     .groupAll {
-    _.sortBy('subject)
+    _.sortBy(('subject, 'predicatetype))
   }.write(Tsv(args("output")))
 }
