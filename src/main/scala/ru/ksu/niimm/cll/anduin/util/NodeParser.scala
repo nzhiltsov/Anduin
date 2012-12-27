@@ -47,4 +47,10 @@ object NodeParser {
     val range = line.substring(endPredicate + 1, endObject).trim
     (subject, predicate, range)
   }
+
+  def parseSEMNtuple(line: String): (Int, Subject, Predicate, Range) = {
+    val predicateType = Integer.parseInt(line.charAt(0).toString)
+    val triple = extractNodesFromNTuple(line.substring(1).trim)
+    (predicateType, triple._1, triple._2, triple._3)
+  }
 }

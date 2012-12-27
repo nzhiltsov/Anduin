@@ -135,7 +135,8 @@ class SEMProcessor(args: Args) extends Job(args) {
 //    _.mkString('object, " ")
 //  }
     .project(('predicatetype, 'subject, 'predicate, 'object))
-    .groupAll {
-    _.sortBy(('subject, 'predicatetype))
-  }.write(Tsv(args("output")))
+//    .groupAll {
+//    _.sortBy(('subject, 'predicatetype))
+//  }
+    .write(Tsv(args("output")))
 }

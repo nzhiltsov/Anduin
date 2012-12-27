@@ -12,7 +12,7 @@ import io.Source
  *
  * @author Nikita Zhiltsov 
  */
-object AdjacencyHelperTool {
+class AdjacencyHelperTool {
   private val logger = LoggerFactory.getLogger("anduin.AdjacencyHelperTool")
 
   def main(args: Array[String]) = {

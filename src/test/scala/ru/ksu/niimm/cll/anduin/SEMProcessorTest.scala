@@ -34,14 +34,10 @@ object SEMProcessorTestSpec extends Specification with TupleConversions {
       sink[(Int, Subject, Predicate, Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output correct ntuples" in {
-          outputBuffer(1)._1 must_== 2
-          outputBuffer(1)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
-          outputBuffer(1)._3 mustEqual "<http://www.aktors.org/ontology/portal#has-author>"
-          outputBuffer(1)._4 mustEqual "\"No. 1 RNA researcher\""
-          outputBuffer(0)._1 must_== 0
-          outputBuffer(0)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
-          outputBuffer(0)._3 mustEqual "<http://www.aktors.org/ontology/portal#label>"
-          outputBuffer(0)._4 mustEqual "\"No. 1 RNA researcher\""
+          outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>",
+            "<http://www.aktors.org/ontology/portal#has-author>", "\"No. 1 RNA researcher\"")
+          outputBuffer mustContain(0, "<http://eprints.rkbexplorer.com/id/caltech/person-1>",
+            "<http://www.aktors.org/ontology/portal#label>", "\"No. 1 RNA researcher\"")
         }
     }.run.
       finish
