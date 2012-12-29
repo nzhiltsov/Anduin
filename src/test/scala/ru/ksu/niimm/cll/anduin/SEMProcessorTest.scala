@@ -29,7 +29,10 @@ object SEMProcessorTestSpec extends Specification with TupleConversions {
         "<http://www.aktors.org/ontology/portal#knows> <http://eprints.rkbexplorer.com/id/caltech/person-2> <http://somecontext.com/1> ."),
       // 3rd row
       ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-        "<http://www.aktors.org/ontology/portal#label> \"No. 1 RNA researcher\" <http://somecontext.com/1> .")
+        "<http://www.aktors.org/ontology/portal#label> \"No. 1 RNA researcher\" <http://somecontext.com/1> ."),
+      // 4th row
+      ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-3> " +
+        "<http://www.aktors.org/ontology/portal#redirect> <http://eprints.rkbexplorer.com/id/caltech/person-4> <http://somecontext.com/4> .")
     )).
       sink[(Int, Subject, Predicate, Range)](Tsv("outputFile")) {
       outputBuffer =>
@@ -38,6 +41,8 @@ object SEMProcessorTestSpec extends Specification with TupleConversions {
             "<http://www.aktors.org/ontology/portal#has-author>", "\"No. 1 RNA researcher\"")
           outputBuffer mustContain(0, "<http://eprints.rkbexplorer.com/id/caltech/person-1>",
             "<http://www.aktors.org/ontology/portal#label>", "\"No. 1 RNA researcher\"")
+          outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/person-3>",
+            "<http://www.aktors.org/ontology/portal#redirect>", "<http://eprints.rkbexplorer.com/id/caltech/person-4>")
         }
     }.run.
       finish

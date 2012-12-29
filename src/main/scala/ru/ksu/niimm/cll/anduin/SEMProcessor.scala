@@ -3,7 +3,7 @@ package ru.ksu.niimm.cll.anduin
 import com.twitter.scalding.{Job, TextLine, Tsv, Args}
 import util.NodeParser
 import NodeParser._
-import cascading.pipe.joiner.InnerJoin
+import cascading.pipe.joiner.{LeftJoin, InnerJoin}
 
 /**
  * This processor implements aggregation of entity description with partial URI resolution according to the paper
@@ -13,7 +13,7 @@ import cascading.pipe.joiner.InnerJoin
  * <p>
  * <b>predicate_type TAB subject TAB predicate TAB objects</b>
  * </p>
- * where 'predicate_type' values are {0,1,2}, i.e. {nameType, attrType, outRelType}, correspondingly,
+ * where 'predicate_type' values are {0,1,2}, i.e., {nameType, attrType, outRelType}, correspondingly,
  * and 'objects' may contain more than one literals delimited with space, e.g.
  * <p>
  * <b>2	<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>	<http://www.aktors.org/ontology/portal#has-author>	"Tyson" "Johnson"</b>
@@ -21,7 +21,6 @@ import cascading.pipe.joiner.InnerJoin
  @author Nikita Zhiltsov
  */
 class SEMProcessor(args: Args) extends Job(args) {
-  private val wordDelimiterRegex = "[^a-zA-Z]"
   private val maxLineLength = 40000
 
   private val namePattern = "^<http.*(label|name|title)>$"
@@ -48,7 +47,7 @@ class SEMProcessor(args: Args) extends Job(args) {
   private val firstLevelEntities = lines.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
   }
-//    .unique(('context, 'subject, 'predicate, 'object))
+  //    .unique(('context, 'subject, 'predicate, 'object))
 
   /**
    * filters first level entities with URIs as subjects, i.e. candidates for further indexing
@@ -126,17 +125,30 @@ class SEMProcessor(args: Args) extends Job(args) {
     predicate: Predicate => 2
   }
   /**
+   * entities with unresolved URIs
+   */
+  private val entitiesWithUnresolvedURIs = firstLevelEntitiesWithURIsAsObjects
+    .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
+    .filter('object2) {
+    range: Range =>
+      range == null
+  }.project(('subject, 'predicate, 'object))
+    .map('predicate -> 'predicatetype) {
+    predicate: Predicate => 2
+  }
+  /**
    * combines all the pipes into the single final pipe
    */
-  private val mergedEntities = firstLevelEntitiesWithLiterals ++ entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs
+  private val mergedEntities =
+    firstLevelEntitiesWithLiterals ++ entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs ++ entitiesWithUnresolvedURIs
 
   mergedEntities
-//    .groupBy(('subject, 'predicate, 'predicatetype)) {
-//    _.mkString('object, " ")
-//  }
+    //    .groupBy(('subject, 'predicate, 'predicatetype)) {
+    //    _.mkString('object, " ")
+    //  }
     .project(('predicatetype, 'subject, 'predicate, 'object))
-//    .groupAll {
-//    _.sortBy(('subject, 'predicatetype))
-//  }
+    //    .groupAll {
+    //    _.sortBy(('subject, 'predicatetype))
+    //  }
     .write(Tsv(args("output")))
 }
