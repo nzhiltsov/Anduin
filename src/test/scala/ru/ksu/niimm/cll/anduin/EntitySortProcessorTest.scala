@@ -3,6 +3,7 @@ package ru.ksu.niimm.cll.anduin
 import org.specs.runner.JUnit4
 import org.specs.Specification
 import com.twitter.scalding.{TupleConversions, Tsv, TextLine, JobTest}
+import util.{FixedPathLzoTextLine, FixedPathLzoTsv}
 import util.NodeParser._
 
 /**
@@ -15,7 +16,7 @@ object EntitySortProcessorTestSpec extends Specification with TupleConversions {
     JobTest("ru.ksu.niimm.cll.anduin.EntitySortProcessor").
       arg("input", "inputFile").
       arg("output", "outputFile").
-      source(TextLine("inputFile"), List(
+      source(new FixedPathLzoTextLine("inputFile"), List(
       // 1st row
       ("0", "1\t<http://example.org/Dvaleriafraschetti>\t<http://xmlns.com/foaf/0.1/nick>\t\"valeria fraschetti\""),
       // 2nd row
@@ -25,7 +26,7 @@ object EntitySortProcessorTestSpec extends Specification with TupleConversions {
       // 4th row
       ("3", "0\t<http://example.org/Dvaleriafraschettz>\t<http://xmlns.com/foaf/0.1/gender>\t\"Female\"")
     )).
-      sink[(Int, Subject, Predicate, Range)](Tsv("outputFile")) {
+      sink[(Int, Subject, Predicate, Range)](new FixedPathLzoTsv("outputFile")) {
       outputBuffer =>
         "output correct ntuples" in {
           outputBuffer.size must_== 4

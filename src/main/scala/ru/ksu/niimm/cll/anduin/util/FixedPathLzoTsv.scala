@@ -6,6 +6,5 @@ import com.twitter.scalding.commons.source.LzoTsv
 /**
  * @author Nikita Zhiltsov 
  */
-class FixedPathLzoTsv(path: String) extends Tsv(path) with LzoTsv{
-
+class FixedPathLzoTsv(path: String) extends Tsv(path) with LzoTsv {
 }

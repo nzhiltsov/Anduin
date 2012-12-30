@@ -2,7 +2,7 @@ package ru.ksu.niimm.cll.anduin
 
 import com.twitter.scalding._
 import util.NodeParser._
-import util.FixedPathLzoTsv
+import util.{FixedPathLzoTsv, FixedPathLzoTextLine}
 import com.twitter.scalding.TextLine
 
 /**
@@ -12,7 +12,7 @@ class EntitySortProcessor(args: Args) extends Job(args) {
   /**
    * reads raw lines
    */
-  private val lines = TextLine(args("input")).read
+  private val lines = new FixedPathLzoTextLine(args("input")).read
 
   /**
    * extracts the unique quad nodes from lines
