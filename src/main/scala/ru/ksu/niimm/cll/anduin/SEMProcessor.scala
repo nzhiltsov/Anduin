@@ -1,7 +1,7 @@
 package ru.ksu.niimm.cll.anduin
 
-import com.twitter.scalding.{Job, TextLine, Tsv, Args}
-import util.NodeParser
+import com.twitter.scalding.{Job, Args}
+import util.{FixedPathLzoTsv, FixedPathLzoTextLine, NodeParser}
 import NodeParser._
 import cascading.pipe.joiner.{LeftJoin, InnerJoin}
 
@@ -37,7 +37,7 @@ class SEMProcessor(args: Args) extends Job(args) {
   /**
    * reads raw lines and filters out too large ones
    */
-  private val lines = TextLine(args("input")).read.filter('line) {
+  private val lines = new FixedPathLzoTextLine(args("input")).read.filter('line) {
     line: String =>
       line.length < maxLineLength
   }
@@ -133,6 +133,10 @@ class SEMProcessor(args: Args) extends Job(args) {
     range: Range =>
       range == null
   }.project(('subject, 'predicate, 'object))
+    .map('object -> 'object) {
+    range: Range =>
+      range.replace("_", " ")
+  }
     .map('predicate -> 'predicatetype) {
     predicate: Predicate => 2
   }
@@ -150,5 +154,5 @@ class SEMProcessor(args: Args) extends Job(args) {
     //    .groupAll {
     //    _.sortBy(('subject, 'predicatetype))
     //  }
-    .write(Tsv(args("output")))
+    .write(new FixedPathLzoTsv(args("output")))
 }
