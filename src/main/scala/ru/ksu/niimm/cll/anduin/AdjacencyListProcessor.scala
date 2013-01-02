@@ -1,7 +1,7 @@
 package ru.ksu.niimm.cll.anduin
 
 import com.twitter.scalding._
-import util.NodeParser
+import util.{FixedPathLzoTsv, FixedPathLzoTextLine, NodeParser}
 import NodeParser._
 import com.twitter.scalding.Tsv
 import com.twitter.scalding.TextLine
@@ -26,7 +26,7 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
   /**
    * reads the entity triples
    */
-  private val triples = TextLine(args("input")).read.mapTo('line ->('subject, 'predicate, 'object)) {
+  private val triples = new FixedPathLzoTextLine(args("input")).read.mapTo('line ->('subject, 'predicate, 'object)) {
     line: String =>
       val nodes = extractNodes(line)
       (nodes._2, nodes._3, nodes._4)
@@ -39,5 +39,5 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
     .project(('relPredicateId, 'subject, 'object))
     .groupAll {
     _.sortBy(('relPredicateId, 'subject))
-  }.write(Tsv(args("output")))
+  }.write(new FixedPathLzoTsv(args("output")))
 }

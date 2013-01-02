@@ -5,6 +5,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
 import ru.ksu.niimm.cll.anduin.util.AdjacencyHelper._
 import org.slf4j.LoggerFactory
 import io.Source
+import com.hadoop.compression.lzo.{LzopInputStream, LzopDecompressor}
 
 /**
  * This tool reads an adjacency list and, for each predicate, saves row-column representation of adjacency matrices;
@@ -72,7 +73,9 @@ class AdjacencyHelperTool {
   //  }
 
   def readTriples(file: String): Iterator[(Int, String, String)] = {
-    val in = new BZip2CompressorInputStream(new FileInputStream(file))
+    val lzoBufferSize = 256 * 1024
+    val lzoDecompressor = new LzopDecompressor(lzoBufferSize)
+    val in = new LzopInputStream(new FileInputStream(file), lzoDecompressor, lzoBufferSize)
     Source.fromInputStream(in).getLines.map {
       line: String =>
         val elems = line.split('\t')

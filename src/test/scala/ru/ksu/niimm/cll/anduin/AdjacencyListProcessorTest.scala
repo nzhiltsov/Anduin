@@ -4,7 +4,7 @@ import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding._
-import util.NodeParser
+import util.{FixedPathLzoTsv, FixedPathLzoTextLine, NodeParser}
 import NodeParser._
 import com.twitter.scalding.TextLine
 
@@ -25,7 +25,7 @@ object AdjacencyListProcessorTestSpec extends Specification with TupleConversion
       ("<http://www.aktors.org/ontology/portal#label>", 1),
       ("<http://www.aktors.org/ontology/portal#knows>", 2)
     ))
-      .source(TextLine("inputFile"), List(
+      .source(new FixedPathLzoTextLine("inputFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> " +
@@ -37,7 +37,7 @@ object AdjacencyListProcessorTestSpec extends Specification with TupleConversion
       ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
         "<http://www.aktors.org/ontology/portal#label> \"No. 1 RNA researcher\" <http://somecontext.com/1> .")
     )).
-      sink[(Int, Subject, Range)](Tsv("outputFile")) {
+      sink[(Int, Subject, Range)](new FixedPathLzoTsv("outputFile")) {
       outputBuffer =>
         "output correct ntuples" in {
           outputBuffer.size must_== 2
