@@ -1,7 +1,6 @@
 package ru.ksu.niimm.cll.anduin.util
 
 import java.io._
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
 import ru.ksu.niimm.cll.anduin.util.AdjacencyHelper._
 import org.slf4j.LoggerFactory
 import io.Source
@@ -13,7 +12,7 @@ import com.hadoop.compression.lzo.{LzopInputStream, LzopDecompressor}
  *
  * @author Nikita Zhiltsov 
  */
-class AdjacencyHelperTool {
+object AdjacencyHelperTool {
   private val logger = LoggerFactory.getLogger("anduin.AdjacencyHelperTool")
 
   def main(args: Array[String]) = {
@@ -28,9 +27,9 @@ class AdjacencyHelperTool {
     def table = entityIdTable(readSubjectObjectPairs(inputAdjacencyListFile))
 
     // saves the results
-    readPredicates(inputAdjacencyListFile).foreach {
+    readPredicates foreach {
       predicate =>
-        def rowColumnFormat = convert(predicatePairs(inputAdjacencyListFile, predicate), table).toList
+        def rowColumnFormat = convert(predicatePairs(inputAdjacencyListFile, predicate), table)
         persist(outputDir, predicate, rowColumnFormat)
     }
     printToFile(new File(outputDir, "entity-ids"))(printWriter =>
@@ -44,33 +43,36 @@ class AdjacencyHelperTool {
     case (p, s, o) => (s, o)
   }
 
-  def readPredicates(in: String): List[Int] = readTriples(in).map {
-    case (p, s, o) => p
-  }.toList.distinct.sorted
+  def readPredicates: Iterator[Int] =
+    Source.fromInputStream(getClass.getResourceAsStream("/top50-btc-predicates.txt")).getLines.map {
+      line: String =>
+        val elems = line.split('\t')
+        val predicateNum = Integer.parseInt(elems(1))
+        predicateNum
+    }
 
 
   def readSubjectObjectPairs(in: String): Iterator[(String, String)] = readTriples(in).map {
     case (p, s, o) => (s, o)
   }
 
-  def persist(outputDir: String, predicate: Int, rowCols: List[(Int, Int)]) = {
-    val rows = rowCols.map {
-      case (r, c) => r
+  def persist(outputDir: String, predicate: Int, rowCols: Iterator[(Int, Int)]) = {
+    if (rowCols.hasNext) {
+      var edgeNumber = 0
+      printToFiles(new File(outputDir, predicate + "-rows"), new File(outputDir, predicate + "-cols"))(
+        (rowWriter: PrintWriter, colWriter: PrintWriter) =>
+          rowCols.foreach {
+            case (r, c) =>
+              edgeNumber += 1
+              rowWriter.print(r + " ")
+              colWriter.print(c + " ")
+          })
+      logger.info("Predicate with id={} has been done: {} edges.", predicate, edgeNumber)
     }
-    printToFile(new File(outputDir, predicate + "-rows"))(printWriter =>
-      rows.foreach(r => printWriter.print(r + " ")))
-    val columns = rowCols.map {
-      case (r, c) => c
+    else {
+      logger.warn("Could find any edges for a predicate with id = {}.", predicate)
     }
-    printToFile(new File(outputDir, predicate + "-cols"))(printWriter =>
-      columns.foreach(c => printWriter.print(c + " ")))
   }
-
-  //  def loadLines(in: java.io.BufferedReader): Stream[String] = {
-  //    val line = in.readLine
-  //    if (line == null) Stream.Empty
-  //    else line #:: loadLines(in)
-  //  }
 
   def readTriples(file: String): Iterator[(Int, String, String)] = {
     val lzoBufferSize = 256 * 1024
@@ -91,7 +93,18 @@ class AdjacencyHelperTool {
     try {
       op(p)
     } finally {
-      p.close()
+      p.close
+    }
+  }
+
+  def printToFiles(first: java.io.File, second: java.io.File)(op: (java.io.PrintWriter, java.io.PrintWriter) => Unit) = {
+    val p1 = new PrintWriter(first)
+    val p2 = new PrintWriter(second)
+    try {
+      op(p1, p2)
+    } finally {
+      p1.close
+      p2.close
     }
   }
 }

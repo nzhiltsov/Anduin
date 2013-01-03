@@ -1,6 +1,7 @@
 package ru.ksu.niimm.cll.anduin.util
 
 import scala.Predef._
+import collection.mutable
 
 /**
  * This helper converts an adjacency list to row-column arrays
@@ -12,19 +13,26 @@ object AdjacencyHelper {
   implicit def pairToList[A](p: (A, A)) = List(p._1, p._2)
 
   /**
-   * returns an array of unique entity URIs
+   * returns a list of unique entity URIs
    *
-   * @param adjacencyList  a stream of subject-object URI pairs
+   * @param adjacencyList  an iterator of subject-object URI pairs
    * @return
    */
-  def entityIdTable(adjacencyList: Iterator[(String, String)]): List[String] =
-    adjacencyList.toList.flatten.distinct
+  def entityIdTable(adjacencyList: Iterator[(String, String)]): List[String] = {
+    val entitySet = new mutable.HashSet[String]()
+    adjacencyList.foreach {
+      case (entity1, entity2) =>
+        entitySet.add(entity1)
+        entitySet.add(entity2)
+    }
+    entitySet.toList
+  }
 
 
   /**
-   * converts a stream of subject-object pairs to row-column arrays
+   * converts an iterator of subject-object pairs to a row-column iterator
    *
-   * @param adjacencyList a stream of subject-object URI pairs
+   * @param adjacencyList an iterator of subject-object URI pairs
    */
   def convert(adjacencyList: Iterator[(String, String)], entityIdTable: List[String]): Iterator[(Int, Int)] = {
     adjacencyList.map {
