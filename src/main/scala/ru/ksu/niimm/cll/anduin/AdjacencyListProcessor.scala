@@ -3,8 +3,6 @@ package ru.ksu.niimm.cll.anduin
 import com.twitter.scalding._
 import util.{FixedPathLzoTsv, FixedPathLzoTextLine, NodeParser}
 import NodeParser._
-import com.twitter.scalding.Tsv
-import com.twitter.scalding.TextLine
 
 /**
  * This processor outputs adjacency lists filtered and grouped by given predicates in the form of:
@@ -37,6 +35,7 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
 
   triples.joinWithTiny('predicate -> 'relPredicate, relevantPredicates)
     .project(('relPredicateId, 'subject, 'object))
+    .unique(('relPredicateId, 'subject, 'object))
     .groupAll {
     _.sortBy(('relPredicateId, 'subject))
   }.write(new FixedPathLzoTsv(args("output")))

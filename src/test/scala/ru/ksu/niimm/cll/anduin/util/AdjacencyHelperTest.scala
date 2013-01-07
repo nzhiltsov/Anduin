@@ -20,17 +20,17 @@ object AdjacencyHelperTestSpec extends Specification {
           "<http://eprints.rkbexplorer.com/id/caltech/person-1>"),
         ("<http://eprints.rkbexplorer.com/id/caltech/person-2>",
           "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"))
-      def entityIdMap: List[String] = entityIdTable(adjacencyList)
+      val entityIdMap: List[String] = entityIdTable(adjacencyList)
       entityIdMap.size must_== 4
       entityIdMap.indexWhere {
         u => u == "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
-      } must_== 0
-      entityIdMap.indexWhere {
-        u => u == "<http://www.aktors.org/ontology/portal#Publication>"
       } must_== 1
       entityIdMap.indexWhere {
-        u => u == "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
+        u => u == "<http://www.aktors.org/ontology/portal#Publication>"
       } must_== 2
+      entityIdMap.indexWhere {
+        u => u == "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
+      } must_== 0
       entityIdMap.indexWhere {
         u => u == "<http://eprints.rkbexplorer.com/id/caltech/person-2>"
       } must_== 3
@@ -46,7 +46,7 @@ object AdjacencyHelperTestSpec extends Specification {
         // 3rd edge
         ("<http://eprints.rkbexplorer.com/id/caltech/person-2>",
           "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"))
-      def entityIdMap = entityIdTable(adjacencyList)
+      val entityIdMap = entityIdTable(adjacencyList)
       def arrays = convert(adjacencyList, entityIdMap)
       val rows = arrays.map {
         case (r, c) => r
@@ -56,12 +56,12 @@ object AdjacencyHelperTestSpec extends Specification {
       }.toList
       rows.size must_== 3
       columns.size must_== 3
-      rows(0) must_== 0
-      columns(0) must_== 1
-      rows(1) must_== 0
-      columns(1) must_== 2
+      rows(0) must_== 1
+      columns(0) must_== 2
+      rows(1) must_== 1
+      columns(1) must_== 0
       rows(2) must_== 3
-      columns(2) must_== 0
+      columns(2) must_== 1
     }
   }
 }

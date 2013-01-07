@@ -24,7 +24,7 @@ object AdjacencyHelperTool {
     val outputDir = args(1)
     new File(outputDir).mkdir
 
-    def table = entityIdTable(readSubjectObjectPairs(inputAdjacencyListFile))
+    val table = entityIdTable(readSubjectObjectPairs(inputAdjacencyListFile))
 
     // saves the results
     readPredicates foreach {
