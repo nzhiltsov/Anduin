@@ -12,7 +12,7 @@ import com.hadoop.compression.lzo.{LzopInputStream, LzopDecompressor}
  *
  * @author Nikita Zhiltsov 
  */
-class AdjacencyHelperTool {
+object AdjacencyHelperTool {
   private val logger = LoggerFactory.getLogger("anduin.AdjacencyHelperTool")
 
   def main(args: Array[String]) = {
@@ -25,7 +25,7 @@ class AdjacencyHelperTool {
     new File(outputDir).mkdir
 
     val table = entityIdTable(readSubjectObjectPairs(inputAdjacencyListFile))
-
+    logger.info("Finished building the entity list: {} items.", table.size)
     // saves the results
     readPredicates foreach {
       predicate =>
