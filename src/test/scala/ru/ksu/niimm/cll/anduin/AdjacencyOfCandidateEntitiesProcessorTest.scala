@@ -20,7 +20,7 @@ object AdjacencyOfCandidateEntitiesProcessorTestSpec extends Specification with 
       arg("inputCandidateList", "inputCandidateListFile").
       arg("output", "outputFile").
       source(new FixedPathLzoTextLine("inputCandidateListFile"), List(
-      ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>")
+      ("0", "http://eprints.rkbexplorer.com/id/caltech/eprints-7519")
     ))
       .source(new TextLine("inputFile"), List(
       // 1st row

@@ -11,7 +11,10 @@ import cascading.pipe.joiner.InnerJoin
  * @author Nikita Zhiltsov 
  */
 class AdjacencyOfCandidateEntitiesProcessor(args: Args) extends Job(args) {
-  private val candidateEntities = new FixedPathLzoTextLine(args("inputCandidateList")).read
+  private val candidateEntities =
+    new FixedPathLzoTextLine(args("inputCandidateList")).read.map('line -> 'line) {
+      line: String => line.mkString("<", "", ">")
+    }
 
   private val triples =
     new TextLine(args("input")).read.unique('line).
