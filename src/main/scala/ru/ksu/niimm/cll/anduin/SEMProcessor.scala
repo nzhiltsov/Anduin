@@ -147,12 +147,9 @@ class SEMProcessor(args: Args) extends Job(args) {
     firstLevelEntitiesWithLiterals ++ entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs ++ entitiesWithUnresolvedURIs
 
   mergedEntities
-    //    .groupBy(('subject, 'predicate, 'predicatetype)) {
-    //    _.mkString('object, " ")
-    //  }
     .project(('predicatetype, 'subject, 'predicate, 'object))
-    //    .groupAll {
-    //    _.sortBy(('subject, 'predicatetype))
-    //  }
+    .groupAll {
+    _.sortBy('subject)
+  }
     .write(new FixedPathLzoTsv(args("output")))
 }
