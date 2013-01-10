@@ -3,10 +3,11 @@ package ru.ksu.niimm.cll.anduin
 import com.twitter.scalding._
 import util.NodeParser._
 import util.{FixedPathLzoTsv, FixedPathLzoTextLine}
-import com.twitter.scalding.TextLine
 
 /**
- * @author Nikita Zhiltsov 
+ * @author Nikita Zhiltsov
+ *
+ * @deprecated This functionality should be merged with SEMProcessor
  */
 class EntitySortProcessor(args: Args) extends Job(args) {
   /**
