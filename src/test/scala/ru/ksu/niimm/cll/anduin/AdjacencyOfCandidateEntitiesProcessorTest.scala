@@ -4,7 +4,7 @@ import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding.{TextLine, JobTest, TupleConversions}
-import util.{FixedPathLzoTsv, FixedPathLzoTextLine}
+import util.FixedPathLzoTsv
 import util.NodeParser._
 
 /**
@@ -19,8 +19,9 @@ object AdjacencyOfCandidateEntitiesProcessorTestSpec extends Specification with 
       arg("input", "inputFile").
       arg("inputCandidateList", "inputCandidateListFile").
       arg("output", "outputFile").
-      source(new FixedPathLzoTextLine("inputCandidateListFile"), List(
-      ("0", "http://eprints.rkbexplorer.com/id/caltech/eprints-7519")
+      source(new TextLine("inputCandidateListFile"), List(
+      ("0", "http://eprints.rkbexplorer.com/id/caltech/eprints-7519"),
+      ("1", "http://eprints.rkbexplorer.com/id/caltech/person-1")
     ))
       .source(new TextLine("inputFile"), List(
       // 1st row

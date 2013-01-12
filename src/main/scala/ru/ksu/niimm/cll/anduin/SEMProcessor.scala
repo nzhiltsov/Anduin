@@ -1,6 +1,6 @@
 package ru.ksu.niimm.cll.anduin
 
-import com.twitter.scalding.{Job, Args}
+import com.twitter.scalding.{TextLine, Job, Args}
 import util.{FixedPathLzoTsv, FixedPathLzoTextLine, NodeParser}
 import NodeParser._
 import cascading.pipe.joiner.{LeftJoin, InnerJoin}
@@ -11,14 +11,17 @@ import cascading.pipe.joiner.{LeftJoin, InnerJoin}
  * <br/>
  * The output format is as follows:
  * <p>
- * <b>predicate_type TAB subject TAB predicate TAB objects</b>
+ * <b>predicate_type TAB subject TAB objects</b>
  * </p>
- * where 'predicate_type' values are {0,1,2}, i.e., {nameType, attrType, outRelType}, correspondingly,
- * and 'objects' may contain more than one literals delimited with space, e.g.
+ * where 'predicate_type' values are {0,1,2,3}, i.e., {nameType, attrType, outRelType, inRelType}, correspondingly,
+ * and 'objects' may contain more than one literal, the literals are delimited with space, e.g.
  * <p>
  * <b>2	<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>	<http://www.aktors.org/ontology/portal#has-author>	"Tyson" "Johnson"</b>
  * </p>
- @author Nikita Zhiltsov
+ *
+ * All the unresolved URIs are normalized to simplify further tokenization.
+ *
+@author Nikita Zhiltsov
  */
 class SEMProcessor(args: Args) extends Job(args) {
   private val maxLineLength = 40000
@@ -37,7 +40,7 @@ class SEMProcessor(args: Args) extends Job(args) {
   /**
    * reads raw lines and filters out too large ones
    */
-  private val lines = new FixedPathLzoTextLine(args("input")).read.filter('line) {
+  private val lines = new TextLine(args("input")).read.filter('line) {
     line: String =>
       line.length < maxLineLength
   }
@@ -47,7 +50,6 @@ class SEMProcessor(args: Args) extends Job(args) {
   private val firstLevelEntities = lines.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
   }
-  //    .unique(('context, 'subject, 'predicate, 'object))
 
   /**
    * filters first level entities with URIs as subjects, i.e. candidates for further indexing
@@ -135,19 +137,55 @@ class SEMProcessor(args: Args) extends Job(args) {
   }.project(('subject, 'predicate, 'object))
     .map('object -> 'object) {
     range: Range =>
-      range.replace("_", " ")
+      stripURI(range)
   }
     .map('predicate -> 'predicatetype) {
     predicate: Predicate => 2
   }
+  val URL_ENCODING_ELEMENT_PATTERN: String = "%2[0-9]{1}"
+  val SPECIAL_SYMBOL_PATTERN: String = "[\\._:'/<>]"
+
+  /**
+   * replaces all the special symbols with spaces in a given entity URI
+   *
+   * @param str  entity URI
+   * @return
+   */
+  def stripURI(str: String) = str.replaceAll(URL_ENCODING_ELEMENT_PATTERN, " ").replaceAll(SPECIAL_SYMBOL_PATTERN, " ")
+
+  /**
+   * entities with resolved incoming links
+   */
+  private val incomingLinks =
+    firstLevelEntitiesWithURIsAsObjects.joinWithSmaller(('subject -> 'subject2), secondLevelEntities)
+      .project(('object, 'predicate, 'object2)).rename(('object, 'predicate, 'object2) ->('subject, 'predicate, 'object))
+      .map('predicate -> 'predicatetype) {
+      predicate: Predicate => 3
+    }
+  /**
+   * entities with unresolved incoming links, the unresolved URIs will be normalized
+   */
+  private val unresolvedIncomingLinks =
+    firstLevelEntitiesWithURIsAsObjects.joinWithSmaller(('subject -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
+      .filter('object2) {
+      range: Range =>
+        range == null
+    }.project(('object, 'predicate, 'subject)).rename(('object, 'predicate, 'subject) ->('subject, 'predicate, 'object))
+      .map('object -> 'object) {
+      range: Range =>
+        stripURI(range)
+    }
+      .map('predicate -> 'predicatetype) {
+      predicate: Predicate => 3
+    }
   /**
    * combines all the pipes into the single final pipe
    */
   private val mergedEntities =
-    firstLevelEntitiesWithLiterals ++ entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs ++ entitiesWithUnresolvedURIs
+    firstLevelEntitiesWithLiterals ++ entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs ++ entitiesWithUnresolvedURIs ++ incomingLinks ++ unresolvedIncomingLinks
 
   mergedEntities
-    .project(('predicatetype, 'subject, 'predicate, 'object))
+    .project(('predicatetype, 'subject, 'object))
     .groupAll {
     _.sortBy('subject)
   }

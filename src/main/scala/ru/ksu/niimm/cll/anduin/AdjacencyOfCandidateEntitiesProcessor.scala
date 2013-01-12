@@ -1,8 +1,7 @@
 package ru.ksu.niimm.cll.anduin
 
 import com.twitter.scalding.{TextLine, Job, Args}
-import util.{FixedPathLzoTextLine, FixedPathLzoTsv}
-import cascading.pipe.joiner.InnerJoin
+import util.FixedPathLzoTsv
 
 /**
  * Given a list of unique entity URIs ("candidates"),
@@ -12,7 +11,7 @@ import cascading.pipe.joiner.InnerJoin
  */
 class AdjacencyOfCandidateEntitiesProcessor(args: Args) extends Job(args) {
   private val candidateEntities =
-    new FixedPathLzoTextLine(args("inputCandidateList")).read.map('line -> 'line) {
+    new TextLine(args("inputCandidateList")).read.map('line -> 'line) {
       line: String => line.mkString("<", "", ">")
     }
 
@@ -24,15 +23,9 @@ class AdjacencyOfCandidateEntitiesProcessor(args: Args) extends Job(args) {
         (triple(0), triple(1), triple(2))
     }
 
-  private val filteredBySubjectTriples =
-    candidateEntities.joinWithLarger('line -> 'subject, triples, joiner = new InnerJoin)
-      .project(('relPredicateId, 'subject, 'object))
-
-  private val filteredByRangeTriples =
-    candidateEntities.joinWithLarger('line -> 'object, triples, joiner = new InnerJoin)
-      .project(('relPredicateId, 'subject, 'object))
-
-  private val filteredTriples = filteredBySubjectTriples ++ filteredByRangeTriples
+  private val filteredTriples =
+    triples.joinWithSmaller('subject -> 'line, candidateEntities).project(('relPredicateId, 'subject, 'object))
+      .joinWithSmaller('object -> 'line, candidateEntities).project(('relPredicateId, 'subject, 'object))
 
   filteredTriples
     .unique(('relPredicateId, 'subject, 'object))
