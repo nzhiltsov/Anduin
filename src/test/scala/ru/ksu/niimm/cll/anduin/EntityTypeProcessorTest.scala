@@ -51,7 +51,7 @@ object EntityTypeProcessorTestSpec extends Specification with TupleConversions {
         "output the correct entity types" in {
           outputBuffer.size must_== 1
           outputBuffer(0)._1 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
-          outputBuffer(0)._2 mustEqual "1, 0"
+          outputBuffer(0)._2 mustEqual "1,0"
         }
     }.run.
       finish

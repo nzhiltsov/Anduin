@@ -33,7 +33,7 @@ class EntityTypeProcessor(args: Args) extends Job(args) {
     .project(('subject, 'relTypeId))
     .unique(('subject, 'relTypeId))
     .groupBy('subject) {
-    _.mkString('relTypeId, ", ")
+    _.mkString('relTypeId, ",")
   }
 
   entityWithTypes.joinWithSmaller('subject -> 'relEntityUri, relevantEntities, new InnerJoin)
