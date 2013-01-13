@@ -49,5 +49,18 @@ object NodeParserTest extends Specification {
         case _ => fail("didn't extract nodes")
       }
     }
+
+    "extract nodes from the SEM triple" in {
+      val line = "3\t<Date:1986>\t\"Introduction\tto Standard ML\""
+      parseSEMNtuple(line) match {
+        case (pid, s, o) => {
+          pid must_== 3
+          s mustEqual "<Date:1986>"
+          o mustEqual "\"Introduction\tto Standard ML\""
+        }
+        case _ => fail("didn't extract nodes")
+      }
+    }
   }
+
 }

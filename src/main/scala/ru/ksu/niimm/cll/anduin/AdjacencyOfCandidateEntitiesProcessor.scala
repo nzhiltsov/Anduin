@@ -7,7 +7,9 @@ import util.FixedPathLzoTsv
  * Given a list of unique entity URIs ("candidates"),
  * this processor filters out non-relevant relations from the adjacency list
  *
- * @author Nikita Zhiltsov 
+ * @author Nikita Zhiltsov
+ *
+ * @deprecated this tool must be merged with AdjacencyListProcessor
  */
 class AdjacencyOfCandidateEntitiesProcessor(args: Args) extends Job(args) {
   private val candidateEntities =

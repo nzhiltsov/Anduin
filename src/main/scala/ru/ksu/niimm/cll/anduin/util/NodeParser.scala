@@ -48,9 +48,9 @@ object NodeParser {
     (subject, predicate, range)
   }
 
-  def parseSEMNtuple(line: String): (Int, Subject, Predicate, Range) = {
+  def parseSEMNtuple(line: String): (Int, Subject, Range) = {
     val predicateType = Integer.parseInt(line.charAt(0).toString)
-    val triple = extractNodesFromNTuple(line.substring(1).trim)
-    (predicateType, triple._1, triple._2, triple._3)
+    val firstTabIndex = line.indexOf('\t', 2)
+    (predicateType, line.substring(2, firstTabIndex), line.substring(firstTabIndex + 1))
   }
 }

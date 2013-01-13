@@ -1,7 +1,7 @@
 package ru.ksu.niimm.cll.anduin
 
 import com.twitter.scalding.{TextLine, Job, Args}
-import util.{FixedPathLzoTsv, FixedPathLzoTextLine, NodeParser}
+import util.{FixedPathLzoTsv, NodeParser}
 import NodeParser._
 import cascading.pipe.joiner.{LeftJoin, InnerJoin}
 
@@ -68,7 +68,7 @@ class SEMProcessor(args: Args) extends Job(args) {
    */
   private val firstLevelEntitiesWithBNodesAsObjects = firstLevelEntitiesWithoutBNodes.filter('object) {
     range: Range => range.startsWith("_")
-  }
+  }.unique(('context, 'subject, 'predicate, 'object))
   /**
    * filters first level entities with literal values
    */
@@ -78,7 +78,8 @@ class SEMProcessor(args: Args) extends Job(args) {
     _.mkString('object, " ")
   }.map('predicate -> 'predicatetype) {
     predicate: Predicate => if (isNamePredicate(predicate)) 0 else 1
-  }
+  }.unique(('predicatetype, 'subject, 'object))
+    .project(('predicatetype, 'subject, 'object))
   /**
    * filters first level blank nodes
    */
@@ -115,7 +116,8 @@ class SEMProcessor(args: Args) extends Job(args) {
     .joinWithSmaller(('context, 'object) ->('context3, 'subject3), secondLevelBNodes, joiner = new InnerJoin)
     .project(('subject, 'predicate, 'object3)).rename('object3 -> 'object).map('predicate -> 'predicatetype) {
     predicate: Predicate => 2
-  }
+  }.unique(('predicatetype, 'subject, 'object))
+    .project(('predicatetype, 'subject, 'object))
   /**
    * resolves URIs as objects across the whole data set
    */
@@ -125,7 +127,8 @@ class SEMProcessor(args: Args) extends Job(args) {
     .rename('object2 -> 'object)
     .map('predicate -> 'predicatetype) {
     predicate: Predicate => 2
-  }
+  }.unique(('predicatetype, 'subject, 'object))
+    .project(('predicatetype, 'subject, 'object))
   /**
    * entities with unresolved URIs
    */
@@ -141,7 +144,9 @@ class SEMProcessor(args: Args) extends Job(args) {
   }
     .map('predicate -> 'predicatetype) {
     predicate: Predicate => 2
-  }
+  }.unique(('predicatetype, 'subject, 'object))
+    .project(('predicatetype, 'subject, 'object))
+
   val URL_ENCODING_ELEMENT_PATTERN: String = "%2[0-9]{1}"
   val SPECIAL_SYMBOL_PATTERN: String = "[\\._:'/<>]"
 
@@ -158,10 +163,12 @@ class SEMProcessor(args: Args) extends Job(args) {
    */
   private val incomingLinks =
     firstLevelEntitiesWithURIsAsObjects.joinWithSmaller(('subject -> 'subject2), secondLevelEntities)
-      .project(('object, 'predicate, 'object2)).rename(('object, 'predicate, 'object2) ->('subject, 'predicate, 'object))
-      .map('predicate -> 'predicatetype) {
-      predicate: Predicate => 3
+      .project(('object, 'object2)).rename(('object, 'object2) ->('subject, 'object))
+      .unique(('subject, 'object))
+      .map('subject -> 'predicatetype) {
+      subject: Subject => 3
     }
+      .project(('predicatetype, 'subject, 'object))
   /**
    * entities with unresolved incoming links, the unresolved URIs will be normalized
    */
@@ -170,14 +177,16 @@ class SEMProcessor(args: Args) extends Job(args) {
       .filter('object2) {
       range: Range =>
         range == null
-    }.project(('object, 'predicate, 'subject)).rename(('object, 'predicate, 'subject) ->('subject, 'predicate, 'object))
+    }.project(('object, 'subject)).rename(('object, 'subject) ->('subject, 'object))
+      .unique(('subject, 'object))
       .map('object -> 'object) {
       range: Range =>
         stripURI(range)
     }
-      .map('predicate -> 'predicatetype) {
-      predicate: Predicate => 3
+      .map('subject -> 'predicatetype) {
+      subject: Subject => 3
     }
+      .project(('predicatetype, 'subject, 'object))
   /**
    * combines all the pipes into the single final pipe
    */
@@ -185,9 +194,5 @@ class SEMProcessor(args: Args) extends Job(args) {
     firstLevelEntitiesWithLiterals ++ entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs ++ entitiesWithUnresolvedURIs ++ incomingLinks ++ unresolvedIncomingLinks
 
   mergedEntities
-    .project(('predicatetype, 'subject, 'object))
-    .groupAll {
-    _.sortBy('subject)
-  }
     .write(new FixedPathLzoTsv(args("output")))
 }

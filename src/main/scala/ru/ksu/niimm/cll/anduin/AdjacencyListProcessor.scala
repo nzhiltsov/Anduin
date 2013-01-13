@@ -22,6 +22,13 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
   private val relevantPredicates =
     TypedTsv[(String, Int)](args("inputPredicateList")).read.rename((0, 1) ->('relPredicate, 'relPredicateId))
   /**
+   * reads the relevant entities to filter the edges
+   */
+  private val candidateEntities =
+    new TextLine(args("inputCandidateList")).read.map('line -> 'line) {
+      line: String => line.mkString("<", "", ">")
+    }
+  /**
    * reads the entity triples
    */
   private val triples = new FixedPathLzoTextLine(args("input")).read.mapTo('line ->('subject, 'predicate, 'object)) {
@@ -31,11 +38,18 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
   }.filter(('subject, 'object)) {
     fields: (Subject, Range) =>
       fields._1.startsWith("<") && fields._2.startsWith("<")
-  }
-
-  triples.joinWithTiny('predicate -> 'relPredicate, relevantPredicates)
+  }.joinWithTiny('predicate -> 'relPredicate, relevantPredicates)
     .project(('relPredicateId, 'subject, 'object))
     .unique(('relPredicateId, 'subject, 'object))
+    .groupAll {
+    _.sortBy(('relPredicateId, 'subject))
+  }
+
+  private val filteredTriples =
+    triples.joinWithSmaller('subject -> 'line, candidateEntities).project(('relPredicateId, 'subject, 'object))
+      .joinWithSmaller('object -> 'line, candidateEntities).project(('relPredicateId, 'subject, 'object))
+
+  filteredTriples
     .groupAll {
     _.sortBy(('relPredicateId, 'subject))
   }.write(new FixedPathLzoTsv(args("output")))
