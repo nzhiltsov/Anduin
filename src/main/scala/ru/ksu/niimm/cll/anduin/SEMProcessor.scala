@@ -24,9 +24,9 @@ import cascading.pipe.joiner.{LeftJoin, InnerJoin}
 @author Nikita Zhiltsov
  */
 class SEMProcessor(args: Args) extends Job(args) {
-  private val maxLineLength = 40000
+  private val maxLineLength = 100000
 
-  private val namePattern = "^<http.*(label|name|title)>$"
+  private val nameLikeAttributes = Array("label", "name", "title")
 
   /**
    * check if the predicate is 'name'-like, e.g. 'name', 'label', 'title' etc.
@@ -34,8 +34,15 @@ class SEMProcessor(args: Args) extends Job(args) {
    * @param predicate a predicate
    * @return
    */
-  def isNamePredicate(predicate: Predicate): Boolean =
-    predicate.matches(namePattern)
+  def isNamePredicate(predicate: Predicate): Boolean = {
+    val pureURI = predicate.toLowerCase
+    val elements = if (pureURI.contains('#')) pureURI.split('#') else pureURI.split('/')
+    val relativePart = if (elements.length < 2) pureURI
+    else elements(elements.length - 1)
+
+    nameLikeAttributes.exists(s => relativePart.contains(s))
+  }
+
 
   /**
    * reads raw lines and filters out too large ones
@@ -148,15 +155,20 @@ class SEMProcessor(args: Args) extends Job(args) {
     .project(('predicatetype, 'subject, 'object))
 
   val URL_ENCODING_ELEMENT_PATTERN: String = "%2[0-9]{1}"
-  val SPECIAL_SYMBOL_PATTERN: String = "[\\._:'/<>]"
+  val HTML_ENCODING_ELEMENT_PATTERN = "(&amp;)"
+  val SPECIAL_SYMBOL_PATTERN: String = "[\\._:'/<>!\\)\\(-=\\?]"
 
-  /**
-   * replaces all the special symbols with spaces in a given entity URI
-   *
-   * @param str  entity URI
-   * @return
-   */
-  def stripURI(str: String) = str.replaceAll(URL_ENCODING_ELEMENT_PATTERN, " ").replaceAll(SPECIAL_SYMBOL_PATTERN, " ")
+  def stripURI(str: String): String = {
+    val pureURI = if (str.startsWith("<") && str.endsWith(">")) str.substring(1, str.length - 1) else str
+    val elements = if (pureURI.contains('#')) pureURI.split('#') else pureURI.split('/')
+
+    val relativePart = if (elements.length < 2) pureURI
+    else elements(elements.length - 1)
+
+    relativePart.
+      replaceAll(URL_ENCODING_ELEMENT_PATTERN, " ").replaceAll(HTML_ENCODING_ELEMENT_PATTERN, " ")
+      .replaceAll(SPECIAL_SYMBOL_PATTERN, " ")
+  }
 
   /**
    * entities with resolved incoming links

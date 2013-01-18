@@ -10,7 +10,7 @@ import util.{FixedPathLzoTsv, FixedPathLzoTextLine}
  * @deprecated This functionality should be merged with SEMProcessor
  */
 class EntitySortProcessor(args: Args) extends Job(args) {
-  private val maxLineLength = 40000
+  private val maxLineLength = 100000
   /**
    * reads raw lines
    */

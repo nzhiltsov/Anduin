@@ -1,7 +1,7 @@
 package ru.ksu.niimm.cll.anduin
 
 import com.twitter.scalding._
-import util.{FixedPathLzoTsv, FixedPathLzoTextLine, NodeParser}
+import util.{FixedPathLzoTextLine, NodeParser}
 import NodeParser._
 
 /**
@@ -31,7 +31,7 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
   /**
    * reads the entity triples
    */
-  private val triples = new FixedPathLzoTextLine(args("input")).read.mapTo('line ->('subject, 'predicate, 'object)) {
+  private val triples = TextLine(args("input")).read.mapTo('line ->('subject, 'predicate, 'object)) {
     line: String =>
       val nodes = extractNodes(line)
       (nodes._2, nodes._3, nodes._4)
@@ -41,16 +41,12 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
   }.joinWithTiny('predicate -> 'relPredicate, relevantPredicates)
     .project(('relPredicateId, 'subject, 'object))
     .unique(('relPredicateId, 'subject, 'object))
-    .groupAll {
-    _.sortBy(('relPredicateId, 'subject))
-  }
+
 
   private val filteredTriples =
     triples.joinWithSmaller('subject -> 'line, candidateEntities).project(('relPredicateId, 'subject, 'object))
       .joinWithSmaller('object -> 'line, candidateEntities).project(('relPredicateId, 'subject, 'object))
 
   filteredTriples
-    .groupAll {
-    _.sortBy(('relPredicateId, 'subject))
-  }.write(new FixedPathLzoTsv(args("output")))
+    .write(Tsv(args("output")))
 }

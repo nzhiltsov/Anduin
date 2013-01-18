@@ -30,7 +30,7 @@ object AdjacencyListProcessorTestSpec extends Specification with TupleConversion
       ("<http://www.aktors.org/ontology/portal#label>", 2),
       ("<http://www.aktors.org/ontology/portal#knows>", 1)
     ))
-      .source(new FixedPathLzoTextLine("inputFile"), List(
+      .source(TextLine("inputFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> " +
@@ -45,16 +45,16 @@ object AdjacencyListProcessorTestSpec extends Specification with TupleConversion
       ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
         "<http://www.aktors.org/ontology/portal#label> <http://eprints.rkbexplorer.com/id/caltech/eprints-7519> <http://somecontext.com/1> .")
     )).
-      sink[(Int, Subject, Range)](new FixedPathLzoTsv("outputFile")) {
+      sink[(Int, Subject, Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct adjacency list" in {
           outputBuffer.size must_== 2
-          outputBuffer(0)._1 must_== 0
-          outputBuffer(0)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
-          outputBuffer(0)._3 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
-          outputBuffer(1)._1 must_== 2
-          outputBuffer(1)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
-          outputBuffer(1)._3 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
+          outputBuffer(1)._1 must_== 0
+          outputBuffer(1)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
+          outputBuffer(1)._3 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
+          outputBuffer(0)._1 must_== 2
+          outputBuffer(0)._2 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/person-1>"
+          outputBuffer(0)._3 mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
         }
     }.run.
       finish
