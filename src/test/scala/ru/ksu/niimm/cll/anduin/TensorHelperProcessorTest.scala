@@ -13,10 +13,11 @@ import com.twitter.scalding.Tsv
 class TensorHelperProcessorTest extends JUnit4(TensorHelperProcessorTestSpec)
 
 object TensorHelperProcessorTestSpec extends Specification with TupleConversions {
-  val entityList = List(
-    ("<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>", 0),
-    ("<http://eprints.rkbexplorer.com/id/caltech/person-1>", 1),
-    ("<http://eprints.rkbexplorer.com/id/caltech/person-2>", 2)
+  val entityList: List[(Int, String)] = List(
+    (0, "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"),
+    (1, "<http://eprints.rkbexplorer.com/id/caltech/person-1>"),
+    (2, "<http://eprints.rkbexplorer.com/id/caltech/person-2>"),
+    (3, "<http://eprints.rkbexplorer.com/id/caltech/person-3>")
   )
   val adjacencyList = List(
     // 1st row
@@ -26,14 +27,16 @@ object TensorHelperProcessorTestSpec extends Specification with TupleConversions
     // 3rd row
     (1, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"),
     // 4th row
-    (1, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>")
+    (1, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"),
+    // 5th row
+    (1, "<http://eprints.rkbexplorer.com/id/caltech/person-12>", "<http://eprints.rkbexplorer.com/id/caltech/eprints-75192222>")
   )
   "For rows, Tensor helper processor job" should {
     JobTest("ru.ksu.niimm.cll.anduin.TensorHelperProcessor").
       arg("input", "inputFile").
       arg("inputEntityList", "inputEntityListFile").
       arg("output", "tensor").
-      source(TypedTsv[(String, Int)]("inputEntityListFile"), entityList)
+      source(TypedTsv[(Int, String)]("inputEntityListFile"), entityList)
       .source(TypedTsv[(Int, String, String)]("inputFile"), adjacencyList)
       .sink[(Int, Int, Int)](Tsv("tensor")) {
       outputBuffer =>
