@@ -4,10 +4,9 @@ import com.twitter.scalding.{TypedTsv, Job, Args}
 import util.FixedPathLzoTsv
 import util.NodeParser._
 import com.twitter.scalding.TextLine
-import cascading.pipe.joiner.InnerJoin
 
 /**
- * Given a list of entity types (see top-50 BTC classes) and list of entities,
+ * Given a list of entity types (see e.g. top-200 BTC classes) and list of entities,
  * this processor outputs the types of each entity
  *
  * @author Nikita Zhiltsov 
@@ -19,8 +18,6 @@ class EntityTypeProcessor(args: Args) extends Job(args) {
    */
   private val relevantTypes =
     TypedTsv[(String, Int)](args("inputTypeList")).read.rename((0, 1) ->('relType, 'relTypeId))
-
-  private val relevantEntities = new TextLine(args("inputEntityList")).read.rename('line -> 'relEntityUri)
 
   private val typeStatements = new TextLine(args("input")).read.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
@@ -36,7 +33,6 @@ class EntityTypeProcessor(args: Args) extends Job(args) {
     _.mkString('relTypeId, ",")
   }
 
-  entityWithTypes.joinWithSmaller('subject -> 'relEntityUri, relevantEntities, new InnerJoin)
-    .project(('subject, 'relTypeId))
+  entityWithTypes
     .write(new FixedPathLzoTsv(args("output")))
 }
