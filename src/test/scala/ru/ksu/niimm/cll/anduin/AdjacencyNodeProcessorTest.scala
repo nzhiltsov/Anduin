@@ -4,6 +4,7 @@ import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding._
+import util.FixedPathLzoTextLine
 
 /**
  * @author Nikita Zhiltsov 
@@ -21,7 +22,7 @@ object AdjacencyNodeProcessorTestSpec extends Specification with TupleConversion
       (0, "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>", "<http://eprints.rkbexplorer.com/id/caltech/person-2>"),
       (0, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "<http://eprints.rkbexplorer.com/id/caltech/person-2>")
     )).
-      sink[String](new TextLine("outputFile")) {
+      sink[String](new FixedPathLzoTextLine("outputFile")) {
       outputBuffer =>
         "output the correct entity list" in {
           outputBuffer.size must_== 3

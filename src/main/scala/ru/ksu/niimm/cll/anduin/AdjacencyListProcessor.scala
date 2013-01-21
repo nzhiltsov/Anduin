@@ -1,7 +1,7 @@
 package ru.ksu.niimm.cll.anduin
 
 import com.twitter.scalding._
-import util.{FixedPathLzoTextLine, NodeParser}
+import util.NodeParser
 import NodeParser._
 
 /**
@@ -22,13 +22,6 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
   private val relevantPredicates =
     TypedTsv[(String, Int)](args("inputPredicateList")).read.rename((0, 1) ->('relPredicate, 'relPredicateId))
   /**
-   * reads the relevant entities to filter the edges
-   */
-  private val candidateEntities =
-    new TextLine(args("inputCandidateList")).read.map('line -> 'line) {
-      line: String => line.mkString("<", "", ">")
-    }
-  /**
    * reads the entity triples
    */
   private val triples = TextLine(args("input")).read.mapTo('line ->('subject, 'predicate, 'object)) {
@@ -38,15 +31,10 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
   }.filter(('subject, 'object)) {
     fields: (Subject, Range) =>
       fields._1.startsWith("<") && fields._2.startsWith("<")
-  }.joinWithTiny('predicate -> 'relPredicate, relevantPredicates)
+  }.unique(('subject, 'predicate, 'object))
+    .joinWithTiny('predicate -> 'relPredicate, relevantPredicates)
     .project(('relPredicateId, 'subject, 'object))
-    .unique(('relPredicateId, 'subject, 'object))
 
-
-  private val filteredTriples =
-    triples.joinWithSmaller('subject -> 'line, candidateEntities).project(('relPredicateId, 'subject, 'object))
-      .joinWithSmaller('object -> 'line, candidateEntities).project(('relPredicateId, 'subject, 'object))
-
-  filteredTriples
+  triples
     .write(Tsv(args("output")))
 }

@@ -1,7 +1,7 @@
 package ru.ksu.niimm.cll.anduin
 
 import com.twitter.scalding._
-import util.FixedPathLzoTsv
+import util.{FixedPathLzoTextLine, FixedPathLzoTsv}
 import com.twitter.scalding.TextLine
 
 /**
@@ -20,5 +20,5 @@ class AdjacencyNodeProcessor(args: Args) extends Job(args) {
 
   nodes.unique('subject).groupAll {
     _.sortBy('subject)
-  }.write(new TextLine(args("output")))
+  }.write(new FixedPathLzoTextLine(args("output")))
 }
