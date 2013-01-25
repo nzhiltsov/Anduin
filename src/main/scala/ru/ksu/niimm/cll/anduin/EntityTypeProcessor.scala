@@ -1,7 +1,6 @@
 package ru.ksu.niimm.cll.anduin
 
-import com.twitter.scalding.{TypedTsv, Job, Args}
-import util.FixedPathLzoTsv
+import com.twitter.scalding._
 import util.NodeParser._
 import com.twitter.scalding.TextLine
 
@@ -13,6 +12,7 @@ import com.twitter.scalding.TextLine
  */
 class EntityTypeProcessor(args: Args) extends Job(args) {
   val RDF_TYPE_PREDICATE = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
+  private val wordEntityPairs = TypedTsv[(String, String)](args("inputTermEntityPairs")).read.rename((0, 1) ->('word, 'entityUri))
   /**
    * reads the predicates of interest
    */
@@ -29,10 +29,12 @@ class EntityTypeProcessor(args: Args) extends Job(args) {
   val entityWithTypes = typeStatements.joinWithTiny('object -> 'relType, relevantTypes)
     .project(('subject, 'relTypeId))
     .unique(('subject, 'relTypeId))
-    .groupBy('subject) {
-    _.mkString('relTypeId, ",")
-  }
 
-  entityWithTypes
-    .write(new FixedPathLzoTsv(args("output")))
+  val wordWithTypes = entityWithTypes.joinWithLarger('subject -> 'entityUri, wordEntityPairs)
+    .project(('word, 'relTypeId))
+
+  wordWithTypes.groupBy(('word, 'relTypeId)) {
+    _.reducers(10).size('count)
+  }.write(Tsv(args("output")))
+
 }

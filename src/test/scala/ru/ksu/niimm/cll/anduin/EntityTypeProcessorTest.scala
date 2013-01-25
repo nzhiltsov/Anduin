@@ -3,9 +3,8 @@ package ru.ksu.niimm.cll.anduin
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
-import com.twitter.scalding.{TypedTsv, JobTest, TupleConversions}
+import com.twitter.scalding.{Tsv, TypedTsv, JobTest, TupleConversions}
 import util.{FixedPathLzoTsv, FixedPathLzoTextLine}
-import util.NodeParser._
 
 /**
  * @author Nikita Zhiltsov 
@@ -17,12 +16,17 @@ object EntityTypeProcessorTestSpec extends Specification with TupleConversions {
   "Entity type processor job" should {
     JobTest("ru.ksu.niimm.cll.anduin.EntityTypeProcessor").
       arg("input", "inputFile").
+      arg("inputTermEntityPairs", "inputTermEntityPairsFile").
       arg("inputTypeList", "inputTypeListFile").
       arg("output", "outputFile").
       source(TypedTsv[(String, Int)]("inputTypeListFile"), List(
       ("<http://xmlns.com/foaf/0.1/Person>", 0),
       ("<http://rdfs.org/sioc/types#WikiArticle>", 1),
       ("<http://purl.org/rss/1.0/item>", 2)
+    ))
+      .source(TypedTsv[(String, String)]("inputTermEntityPairsFile"), List(
+      ("person", "<http://eprints.rkbexplorer.com/id/caltech/person-1>"),
+      ("article", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>")
     ))
       .source(new FixedPathLzoTextLine("inputFile"), List(
       // 1st row
@@ -42,12 +46,13 @@ object EntityTypeProcessorTestSpec extends Specification with TupleConversions {
       ("4", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
         "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdfs.org/sioc/types#WikiArticle> <http://somecontext.com/10> .")
     )).
-      sink[(Subject, String)](new FixedPathLzoTsv("outputFile")) {
+      sink[(String, Int, Int)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct entity types" in {
-          outputBuffer.size must_== 2
-          outputBuffer mustContain ("<http://eprints.rkbexplorer.com/id/caltech/person-1>", "1,0")
-          outputBuffer mustContain ("<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>", "2")
+          outputBuffer.size must_== 3
+          outputBuffer mustContain("person", 0, 1)
+          outputBuffer mustContain("person", 1, 1)
+          outputBuffer mustContain("article", 2, 1)
         }
     }.run.
       finish
