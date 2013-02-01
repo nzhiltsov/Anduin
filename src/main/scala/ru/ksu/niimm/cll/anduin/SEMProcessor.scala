@@ -206,5 +206,9 @@ class SEMProcessor(args: Args) extends Job(args) {
     firstLevelEntitiesWithLiterals ++ entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs ++ entitiesWithUnresolvedURIs ++ incomingLinks ++ unresolvedIncomingLinks
 
   mergedEntities
+    .unique(('predicatetype, 'subject, 'object))
+    .groupBy('subject) {
+    _.reducers(10).sortBy('subject)
+  }
     .write(new FixedPathLzoTsv(args("output")))
 }
