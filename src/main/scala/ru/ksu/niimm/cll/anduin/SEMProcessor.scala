@@ -24,8 +24,7 @@ import cascading.pipe.joiner.{LeftJoin, InnerJoin}
 @author Nikita Zhiltsov
  */
 class SEMProcessor(args: Args) extends Job(args) {
-  private val maxLineLength = 100000
-
+  val RDF_TYPE_PREDICATE = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
   private val nameLikeAttributes = Array("label", "name", "title")
 
   /**
@@ -45,18 +44,31 @@ class SEMProcessor(args: Args) extends Job(args) {
 
 
   /**
-   * reads raw lines and filters out too large ones
+   * reads the context-subject-predicate-object quads
    */
-  private val lines = new TextLine(args("input")).read.filter('line) {
-    line: String =>
-      line.length < maxLineLength
-  }
-  /**
-   * extracts the unique quad nodes from lines
-   */
-  private val firstLevelEntities = lines.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
+  private val quads = new TextLine(args("input")).read.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
   }
+  /**
+   * reads the ontological classes from objects
+   */
+  private val ontologicalClasses = quads.filter('predicate) {
+    predicate: Predicate =>
+      predicate.equals(RDF_TYPE_PREDICATE)
+  }.project('object).unique('object).rename('object -> 'ontClass)
+  /**
+   * filters out the ontological classes
+   */
+  private val firstLevelEntities = quads.joinWithSmaller('subject -> 'ontClass, ontologicalClasses, joiner = new LeftJoin)
+    .filter('ontClass) {
+    range: Range =>
+      range == null
+  }.project(('context, 'subject, 'predicate, 'object))
+    .joinWithSmaller('object -> 'ontClass, ontologicalClasses, joiner = new LeftJoin)
+    .filter('ontClass) {
+    range: Range =>
+      range == null
+  }.project(('context, 'subject, 'predicate, 'object))
 
   /**
    * filters first level entities with URIs as subjects, i.e. candidates for further indexing
