@@ -4,6 +4,9 @@ import com.twitter.scalding.{TextLine, Job, Args}
 import util.{FixedPathLzoTsv, NodeParser}
 import NodeParser._
 import cascading.pipe.joiner.{LeftJoin, InnerJoin}
+import org.jsoup.safety.Whitelist
+import org.jsoup.Jsoup
+import org.apache.commons.lang.StringEscapeUtils
 
 /**
  * This processor implements aggregation of entity description with partial URI resolution according to the paper
@@ -24,6 +27,7 @@ import cascading.pipe.joiner.{LeftJoin, InnerJoin}
 @author Nikita Zhiltsov
  */
 class SEMProcessor(args: Args) extends Job(args) {
+  val OUTPUT_FILE_NUMBER = 10
   val RDF_TYPE_PREDICATE = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
   private val nameLikeAttributes = Array("label", "name", "title")
 
@@ -217,10 +221,21 @@ class SEMProcessor(args: Args) extends Job(args) {
   private val mergedEntities =
     firstLevelEntitiesWithLiterals ++ entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs ++ entitiesWithUnresolvedURIs ++ incomingLinks ++ unresolvedIncomingLinks
 
+  def cleanHTMLMarkup: String => String = str => StringEscapeUtils.unescapeHtml(Jsoup.clean(str, Whitelist.none()))
+
+  /**
+   * clean and output the data
+   */
   mergedEntities
+    .map('object -> 'object) {
+    range: Range =>
+      cleanHTMLMarkup(range)
+  }
     .unique(('predicatetype, 'subject, 'object))
     .groupBy('subject) {
-    _.reducers(10).sortBy('subject)
+    _.reducers(OUTPUT_FILE_NUMBER).sortBy('subject)
   }
     .write(new FixedPathLzoTsv(args("output")))
+
+
 }
