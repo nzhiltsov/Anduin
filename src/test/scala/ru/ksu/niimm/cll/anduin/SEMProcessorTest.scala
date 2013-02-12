@@ -14,41 +14,38 @@ import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 class SEMProcessorTest extends JUnit4(SEMProcessorTestSpec)
 
 object SEMProcessorTestSpec extends Specification with TupleConversions {
-  "SEM processor job" should {
+  "The SEM processor job" should {
     JobTest("ru.ksu.niimm.cll.anduin.SEMProcessor").
-      arg("input", "inputFile").
-      arg("output", "outputFile").
-      source(new TextLine("inputFile"), List(
-      // 1st row
-      ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
-        "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-        "<http://somecontext.com/1> ."),
-      // 2nd row
-      ("1", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-        "<http://www.aktors.org/ontology/portal#knows> <http://eprints.rkbexplorer.com/id/caltech/person-2> <http://somecontext.com/1> ."),
-      // 3rd row
-      ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-        "<http://www.aktors.org/ontology/portal#label> \"No. 1 RNA researcher 1\" <http://somecontext.com/1> ."),
-      // 4th row
-      ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-3> " +
-        "<http://www.aktors.org/ontology/portal#redirect> <http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)> <http://somecontext.com/4> ."),
-      // 5th row
-      ("4", "<http://eprints.rkbexplorer.com/id/caltech/person-2> " +
-        "<http://www.aktors.org/ontology/portal#value> \"<body><p>123</p></body></html>\" <http://somecontext.com/4> ."),
-      // 6th row
-      ("5", "<http://eprints.rkbexplorer.com/id/caltech/person-22> " +
-        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <akt:Person> <http://somecontext.com/5> .")
-    )).
-      sink[(Int, Subject, Range)](new FixedPathLzoTsv("outputFile")) {
+      arg("inputNameLike", "inputNameLikeFile").
+      arg("inputOutgoingLinks", "inputOutgoingLinksFile").
+      arg("inputIncomingLinks", "inputIncomingLinksFile").
+      arg("output", "outputFile")
+      .source(TypedTsv[(Int, Subject, Range)]("inputNameLikeFile"), List(
+      (0, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"No. 1 RNA researcher 1\""),
+      (1, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"123\"")
+    ))
+      .source(TypedTsv[(Int, Subject, Range)]("inputOutgoingLinksFile"), List(
+      (2, "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>", "\"No. 1 RNA researcher 1\""),
+      (2, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "person"),
+      (2, "<http://eprints.rkbexplorer.com/id/caltech/person-3>", "Caldwell High School Caldwell Texas"),
+      (2, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"Relevant name\"")
+    ))
+      .source(TypedTsv[(Int, Subject, Range)]("inputIncomingLinksFile"), List(
+      (3, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"No. 1 RNA researcher 1\""),
+      (3, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "eprints"),
+      (3, "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>", "person")
+    ))
+      .sink[(Int, Subject, Range)](new FixedPathLzoTsv("outputFile")) {
       outputBuffer =>
         "output the correct entity descriptions" in {
-          outputBuffer.size must_== 8
-          outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>", "\"No. 1 RNA researcher 1\"")
+          outputBuffer.size must_== 9
           outputBuffer mustContain(0, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"No. 1 RNA researcher 1\"")
+          outputBuffer mustContain(1, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"123\"")
+          outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>", "\"No. 1 RNA researcher 1\"")
           outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "person")
           outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/person-3>", "Caldwell High School Caldwell Texas")
+          outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"Relevant name\"")
           outputBuffer mustContain(3, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"No. 1 RNA researcher 1\"")
-          outputBuffer mustContain(1, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"123\"")
           outputBuffer mustContain(3, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "eprints")
           outputBuffer mustContain(3, "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>", "person")
         }
