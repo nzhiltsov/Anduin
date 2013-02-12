@@ -17,7 +17,7 @@ class EntityTypeProcessor(args: Args) extends Job(args) {
    * reads the predicates of interest
    */
   private val relevantTypes =
-    TypedTsv[(String, Int)](args("inputTypeList")).read.rename((0, 1) ->('relType, 'relTypeId))
+    TypedTsv[(Int, String)](args("inputTypeList")).read.rename((0, 1) ->('relTypeId, 'relType))
 
   private val typeStatements = new TextLine(args("input")).read.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)

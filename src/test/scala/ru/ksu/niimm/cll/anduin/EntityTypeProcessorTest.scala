@@ -19,10 +19,10 @@ object EntityTypeProcessorTestSpec extends Specification with TupleConversions {
       arg("inputTermEntityPairs", "inputTermEntityPairsFile").
       arg("inputTypeList", "inputTypeListFile").
       arg("output", "outputFile").
-      source(TypedTsv[(String, Int)]("inputTypeListFile"), List(
-      ("<http://xmlns.com/foaf/0.1/Person>", 0),
-      ("<http://rdfs.org/sioc/types#WikiArticle>", 1),
-      ("<http://purl.org/rss/1.0/item>", 2)
+      source(TypedTsv[(Int, String)]("inputTypeListFile"), List(
+      (0, "<http://xmlns.com/foaf/0.1/Person>"),
+      (1, "<http://rdfs.org/sioc/types#WikiArticle>"),
+      (2, "<http://purl.org/rss/1.0/item>")
     ))
       .source(TypedTsv[(String, String)]("inputTermEntityPairsFile"), List(
       ("person", "<http://eprints.rkbexplorer.com/id/caltech/person-1>"),

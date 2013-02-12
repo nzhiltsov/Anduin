@@ -1,200 +1,200 @@
-<http://xmlns.com/foaf/0.1/Person>	0
-<http://xmlns.com/foaf/0.1/OnlineAccount>	1
-<http://purl.org/rss/1.0/item>	2
-<http://www.geonames.org/ontology#Feature>	3
-<http://www.aktors.org/ontology/portal#Person>	4
-<http://www.aktors.org/ontology/portal#Article-Reference>	5
-<http://xmlns.com/foaf/0.1/Document>	6
-<http://xmlns.com/wordnet/1.6/Person>	7
-<http://xmlns.com/foaf/0.1/chatEvent>	8
-<http://www.aktors.org/ontology/portal#Affiliated-Person>	9
-<http://www.w3.org/2002/07/owl#Class>	10
-<http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#HtmlDocument>	11
-<http://rdfs.org/sioc/types#WikiArticle>	12
-<http://www.aktors.org/ontology/portal#Book-Section-Reference>	13
-<http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq>	14
-<http://www.w3.org/2004/02/skos/core#Concept>	15
-<http://www.kisti.re.kr/isrl/ResearchRefOntology#TopicAreaOfAccomplishment>	16
-<http://xmlns.com/foaf/0.1/PersonalProfileDocument>	17
-<http://www.w3.org/2006/vcard/ns#VCard>	18
-<http://purl.org/ontology/mo/Track>	19
-<http://www.w3.org/2006/vcard/ns#Name>	20
-<http://purl.org/rss/1.0/channel>	21
-<http://www.kisti.re.kr/isrl/ResearchRefOntology#Location>	22
-<http://www.aktors.org/ontology/support#Time-Interval>	23
-<http://www.w3.org/2002/07/owl#Restriction>	24
-<http://purl.oclc.org/net/rss_2.0/enc#Enclosure>	25
-<http://www.daml.org/2002/02/telephone/1/areacodes-ont#Exchange>	26
-<http://www.aktors.org/ontology/portal#Project>	27
-<http://www.aktors.org/ontology/portal#Amount-Of-Money>	28
-<http://www.geneontology.org/formats/oboInOwl#DbXref>	29
-<http://www.aktors.org/ontology/portal#Funding>	30
-<http://blogs.yandex.ru/schema/foaf/Posts>	31
-<http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement>	32
-<http://www.kisti.re.kr/isrl/ResearchRefOntology#CreatorInfo>	33
-<http://purl.org/ontology/mo/Record>	34
-<http://www.aktors.org/ontology/portal#Publication-Reference>	35
-<http://purl.org/ontology/last-fm/ScrobbleEvent>	36
-<http://purl.org/ontology/mo/MusicalArtist>	37
-<http://www.rdfabout.com/rdf/schema/usbill/LegislativeAction>	38
-<http://dbpedia.org/class/yago/LivingPeople>	39
-<http://rdfs.org/sioc/ns#User>	40
-<http://xmlns.com/foaf/0.1/Agent>	41
-<http://rdf.opiumfield.com/lastfm/spec#Neighbour>	42
-<http://www.w3.org/2002/07/owl#Thing>	43
-<http://www.daml.org/2003/02/fips55/fips-55-ont#Place>	44
-<http://www.aktors.org/ontology/portal#Organization>	45
-<http://www.w3.org/2002/07/owl#Ontology>	46
-<http://www.kisti.re.kr/isrl/ResearchRefOntology#TopicTerm>	47
-<http://xmlns.com/foaf/0.1/Group>	48
-<http://rdflib.net/2002/InformationStore#Context>	49
-<http://www.geneontology.org/formats/oboInOwl#Synonym>	50
-<http://www.w3.org/2005/Atomauthor>	51
-<http://www.kisti.re.kr/isrl/ResearchRefOntology#Person>	52
-<http://www.w3.org/2006/03/wn/wn20/schema/NounWordSense>	53
-<http://rdf.freebase.com/ns/common.topic>	54
-<http://swrc.ontoware.org/ontology#InProceedings>	55
-<http://www.w3.org/2000/01/rdf-schema#Class>	56
-<http://www.w3.org/2003/01/geo/wgs84_pos#Point>	57
-<http://www.kisti.re.kr/isrl/ResearchRefOntology#Article>	58
-<http://www.aktors.org/ontology/portal#Academic>	59
-<http://www.semanticdesktop.org/ontologies/2007/03/22/nco#Contact>	60
-<http://dbpedia.org/ontology/Resource>	61
-<http://www.w3.org/2006/03/wn/wn20/schema/NounSynset>	62
-<http://www.aktors.org/ontology/portal#Journal>	63
-<http://rdfs.org/sioc/ns#Post>	64
-<http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#Photo>	65
-<http://www.w3.org/2006/03/wn/wn20/schema/Word>	66
-<http://www.daml.org/2003/02/fips55/types#U6>	67
-<http://www.geneontology.org/formats/oboInOwl#Definition>	68
-<http://www.rdfabout.com/rdf/schema/ussec/DirectorRelation>	69
-<http://www.rdfabout.com/rdf/schema/ussec/OfficerRelation>	70
-<http://purl.org/rss/1.0/image>	71
-<http://www.w3.org/2006/03/wn/wn20/schema/Collocation>	72
-<http://www.w3.org/2002/07/owl#ObjectProperty>	73
-<http://www.rdfabout.com/rdf/schema/usbill/OfficialTitle>	74
-<http://www.affymetrix.com/community/publications/affymetrix/tmsplice#Exon>	75
-<http://xmlns.com/foaf/0.1/Image>	76
-<http://www.aktors.org/ontology/portal#Book-Reference>	77
-<http://www.google.com/schemas/sitemap/0.84loc>	78
-<http://www.daml.org/2002/02/telephone/1/areacodes-ont#Switch>	79
-<http://www.aktors.org/ontology/portal#Generic-Agent>	80
-<http://semantic-mediawiki.org/swivt/1.0#Subject>	81
-<http://www.cogsci.princeton.edu/~wn/schema/Noun>	82
-<http://swrc.ontoware.org/ontology#Article>	83
-<http://dbpedia.org/class/yago/Album106591815>	84
-<http://rorweb.com/0.1/Resource>	85
-<http://www.aktors.org/ontology/portal#Conference-Proceedings-Reference>	86
-<http://rdf.freebase.com/ns/type.content>	87
-<http://www.aktors.org/ontology/portal#Town>	88
-<http://www.rdfabout.com/rdf/schema/usbill/ShortTitle>	89
-<http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag>	90
-<http://rdf.freebase.com/ns/film.performance>	91
-<http://rdf.freebase.com/ns/common.image>	92
-<http://www.sitemaps.org/schemas/sitemap/0.9loc>	93
-<http://www.aktors.org/ontology/portal#Proceedings-Paper-Reference>	94
-<http://purl.uniprot.org/core/Resource>	95
-<http://dbpedia.org/class/yago/Village108672738>	96
-<http://rdfs.org/sioc/ns#UserGroup>	97
-<http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>	98
-<http://www.rdfabout.com/rdf/schema/politico/Term>	99
-<http://umbel.org/umbel/sc/Person>	100
-<http://data.linkedmdb.org/resource/oddlinker/interlink>	101
-<http://purl.uniprot.org/core/Range>	102
-<http://purl.uniprot.org/core/Journal_Citation>	103
-<http://dbpedia.org/ontology/Person>	104
-<http://rdf.insee.fr/geo/Commune>	105
-<http://www.w3.org/2002/07/owl#DatatypeProperty>	106
-<http://purl.org/vocab/bio/0.1/Birth>	107
-<http://www.w3.org/2008/05/skos-xl#Label>	108
-<http://purl.org/ontology/mo/Signal>	109
-<http://inference-web.org/2.0/pml-provenance.owl#Information>	110
-<http://rdf.freebase.com/ns/people.person>	111
-<http://sites.wiwiss.fu-berlin.de/suhl/bizer/bookmashup/simpleCommerceVocab01.rdf#Offer>	112
-<http://www.w3.org/2006/time#Interval>	113
-<http://www.purl.org/stuff/rev#Review>	114
-<http://www.daml.org/2001/03/daml+oil#Class>	115
-<http://lsdis.cs.uga.edu/projects/semdis/opus#Article>	116
-<http://bio2rdf.org/uniprot:Sequence>	117
-<http://www.rdfabout.com/rdf/schema/usbill/HouseBill>	118
-<http://www.w3.org/2006/03/wn/wn20/schema/VerbWordSense>	119
-<http://lsdis.cs.uga.edu/proj/semdis/testbed/#Company>	120
-<http://www.rdfabout.com/rdf/schema/usbill/Amendment>	121
-<http://scot-project.org/scot/ns#Tag>	122
-<http://rdf.freebase.com/ns/education.education>	123
-<http://rdfs.org/sioc/types#Category>	124
-<http://dbpedia.org/class/yago/Person100007846>	125
-<http://rdf.freebase.com/ns/measurement_unit.rect_size>	126
-<http://www.kisti.re.kr/isrl/ResearchRefOntology#PubInfo>	127
-<http://dbpedia.org/class/yago/Movie106613686>	128
-<http://knowledgeweb.semanticweb.org/heterogeneity/alignmentCell>	129
-<http://www.w3.org/2006/vcard/ns#Address>	130
-<http://dbpedia.org/class/yago/Landmark108624891>	131
-<http://rdf.freebase.com/ns/common.webpage>	132
-<http://inference-web.org/2.0/pml-justification.owl#NodeSetList>	133
-<http://purl.uniprot.org/core/Domain_Assignment_Statement>	134
-<http://www.w3.org/2006/03/wn/wn20/schema/AdjectiveSatelliteWordSense>	135
-<http://dbpedia.org/ontology/Place>	136
-<http://www.rdfabout.com/rdf/schema/ussec/TenPercentOwnerRelation>	137
-<http://sw.opencyc.org/2008/06/10/concept/en/Individual>	138
-<http://www.w3.org/2006/vcard/ns#Organization>	139
-<http://my.netscape.com/rdf/simple/0.9/item>	140
-<http://tap.xmlns.com/data/Musician>	141
-<http://tap.stanford.edu/data/Musician>	142
-<http://rdfs.org/sioc/ns#Forum>	143
-<http://dbpedia.org/ontology/Work>	144
-<http://www.w3.org/2002/07/owl#FunctionalProperty>	145
-<http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing>	146
-<http://rdfs.org/sioc/ns#Usergroup>	147
-<http://swat.cse.lehigh.edu/resources/onto/citeseer.owl#Record>	148
-<http://www.w3.org/2002/12/cal/icaltzd#Vevent>	149
-<http://xmdr.org/ont/iso11179-3e3draft_r4.owl#Link_End>	150
-<http://data.linkedct.org/resource/linkedct/location>	151
-<http://rdf.freebase.com/ns/location.location>	152
-<http://www.kisti.re.kr/isrl/ResearchRefOntology#Institution>	153
-<http://www.w3.org/2006/03/wn/wn20/schema/VerbSynset>	154
-<http://www.daml.org/2003/02/fips55/types#U8>	155
-<http://scot-project.org/scot/ns#Cooccurrence>	156
-<http://rdfs.org/sioc/types#ArgumentativeDiscussion>	157
-<http://purl.org/dc/terms/W3CDTF>	158
-<http://inference-web.org/2.0/pml-justification.owl#InferenceStep>	159
-<http://data.linkedmdb.org/resource/movie/film>	160
-<http://inference-web.org/2.0/pml-justification.owl#NodeSet>	161
-<http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>	162
-<http://www.rdfabout.com/rdf/schema/usbill/SenateBill>	163
-<http://umbel.org/umbel#SubjectConcept>	164
-<http://dbpedia.org/ontology/PopulatedPlace>	165
-<http://purl.org/dc/dcmitype/Text>	166
-<http://dbpedia.org/class/yago/Artist109812338>	167
-<http://www.daml.org/2003/02/fips55/types#T1>	168
-<http://www.w3.org/2006/03/wn/wn20/schema/AdjectiveSatelliteSynset>	169
-<http://www.aktors.org/ontology/portal#Research-In-Academia>	170
-<http://auswiki.org/index.php/Special:URIResolver/Category-3ASuburbs>	171
-<http://www.daml.org/2001/03/daml+oil#List>	172
-<http://purl.org/ontology/mo/MusicArtist>	173
-<http://www.daml.org/2003/02/fips55/types#C1>	174
-<http://dbpedia.org/class/yago/Actor109765278>	175
-<http://umbel.org/umbel/ac/Artifact>	176
-<http://dbpedia.org/ontology/Artist>	177
-<http://swrc.ontoware.org/ontology#Person>	178
-<http://athena.ics.forth.gr:9090/RDF/VRP/Examples/unspsc1.rdf#Commodity>	179
-<http://dbpedia.org/class/yago/Site108651247>	180
-<http://purl.uniprot.org/core/Sequence>	181
-<http://rdf.freebase.com/ns/media_common.quotation>	182
-<http://www.holygoat.co.uk/owl/redwood/0.1/tags/Tag>	183
-<http://www.rdfabout.com/rdf/schema/usbill/VoteAction>	184
-<http://purl.uniprot.org/core/Citation_Statement>	185
-<http://www.aktors.org/ontology/portal#Postal-Address>	186
-<http://www.daml.org/2001/03/daml+oil#Restriction>	187
-<http://www.biopax.org/release/biopax-level2.owl#physicalEntityParticipant>	188
-<http://lsdis.cs.uga.edu/~farshad/events/EventSchema.rdf#TimeStamp>	189
-<http://rdf.freebase.com/ns/business.employment_tenure>	190
-<http://lsdis.cs.uga.edu/~farshad/events/EventSchema.rdf#Time>	191
-<http://dbpedia.org/ontology/Organisation>	192
-<http://sw.opencyc.org/2008/06/10/concept/Mx4rpPHhAOB1EdqAAAACs6hRXg>	193
-<http://xmlns.com/foaf/corp#Company>	194
-<http://dbpedia.org/class/yago/Medium106254669>	195
-<http://www.rdfabout.com/rdf/schema/politico/Politician>	196
-<http://smw.ontoware.org/2005/smw#Thing>	197
-<http://dbpedia.org/class/yago/Company108058098>	198
-<http://purl.org/dc/terms/RFC1766>	199
+     0	<http://xmlns.com/foaf/0.1/Person>
+     1	<http://xmlns.com/foaf/0.1/OnlineAccount>
+     2	<http://www.geonames.org/ontology#Feature>
+     3	<http://www.aktors.org/ontology/portal#Person>
+     4	<http://www.aktors.org/ontology/portal#Article-Reference>
+     5	<http://xmlns.com/wordnet/1.6/Person>
+     6	<http://www.aktors.org/ontology/portal#Affiliated-Person>
+     7	<http://rdfs.org/sioc/types#WikiArticle>
+     8	<http://www.aktors.org/ontology/portal#Book-Section-Reference>
+     9	<http://www.kisti.re.kr/isrl/ResearchRefOntology#TopicAreaOfAccomplishment>
+    10	<http://xmlns.com/foaf/0.1/PersonalProfileDocument>
+    11	<http://www.w3.org/2006/vcard/ns#VCard>
+    12	<http://purl.org/ontology/mo/Track>
+    13	<http://www.w3.org/2006/vcard/ns#Name>
+    14	<http://www.kisti.re.kr/isrl/ResearchRefOntology#Location>
+    15	<http://www.aktors.org/ontology/support#Time-Interval>
+    16	<http://purl.oclc.org/net/rss_2.0/enc#Enclosure>
+    17	<http://www.daml.org/2002/02/telephone/1/areacodes-ont#Exchange>
+    18	<http://www.aktors.org/ontology/portal#Project>
+    19	<http://www.aktors.org/ontology/portal#Amount-Of-Money>
+    20	<http://www.geneontology.org/formats/oboInOwl#DbXref>
+    21	<http://www.aktors.org/ontology/portal#Funding>
+    22	<http://blogs.yandex.ru/schema/foaf/Posts>
+    23	<http://www.kisti.re.kr/isrl/ResearchRefOntology#CreatorInfo>
+    24	<http://purl.org/ontology/mo/Record>
+    25	<http://www.aktors.org/ontology/portal#Publication-Reference>
+    26	<http://purl.org/ontology/mo/MusicalArtist>
+    27	<http://www.rdfabout.com/rdf/schema/usbill/LegislativeAction>
+    28	<http://dbpedia.org/class/yago/LivingPeople>
+    29	<http://rdfs.org/sioc/ns#User>
+    30	<http://xmlns.com/foaf/0.1/Agent>
+    31	<http://rdf.opiumfield.com/lastfm/spec#Neighbour>
+    32	<http://www.daml.org/2003/02/fips55/fips-55-ont#Place>
+    33	<http://www.aktors.org/ontology/portal#Organization>
+    34	<http://www.kisti.re.kr/isrl/ResearchRefOntology#TopicTerm>
+    35	<http://xmlns.com/foaf/0.1/Group>
+    36	<http://rdflib.net/2002/InformationStore#Context>
+    37	<http://www.geneontology.org/formats/oboInOwl#Synonym>
+    38	<http://www.kisti.re.kr/isrl/ResearchRefOntology#Person>
+    39	<http://rdf.freebase.com/ns/common.topic>
+    40	<http://swrc.ontoware.org/ontology#InProceedings>
+    41	<http://www.w3.org/2003/01/geo/wgs84_pos#Point>
+    42	<http://www.kisti.re.kr/isrl/ResearchRefOntology#Article>
+    43	<http://www.aktors.org/ontology/portal#Academic>
+    44	<http://www.semanticdesktop.org/ontologies/2007/03/22/nco#Contact>
+    45	<http://dbpedia.org/ontology/Resource>
+    46	<http://www.aktors.org/ontology/portal#Journal>
+    47	<http://www.semanticdesktop.org/ontologies/2007/05/10/nexif#Photo>
+    48	<http://www.w3.org/2006/03/wn/wn20/schema/Word>
+    49	<http://www.daml.org/2003/02/fips55/types#U6>
+    50	<http://www.geneontology.org/formats/oboInOwl#Definition>
+    51	<http://www.rdfabout.com/rdf/schema/ussec/DirectorRelation>
+    52	<http://www.rdfabout.com/rdf/schema/ussec/OfficerRelation>
+    53	<http://www.w3.org/2006/03/wn/wn20/schema/Collocation>
+    54	<http://www.rdfabout.com/rdf/schema/usbill/OfficialTitle>
+    55	<http://www.affymetrix.com/community/publications/affymetrix/tmsplice#Exon>
+    56	<http://www.aktors.org/ontology/portal#Book-Reference>
+    57	<http://www.google.com/schemas/sitemap/0.84loc>
+    58	<http://www.daml.org/2002/02/telephone/1/areacodes-ont#Switch>
+    59	<http://www.aktors.org/ontology/portal#Generic-Agent>
+    60	<http://semantic-mediawiki.org/swivt/1.0#Subject>
+    61	<http://www.cogsci.princeton.edu/~wn/schema/Noun>
+    62	<http://swrc.ontoware.org/ontology#Article>
+    63	<http://dbpedia.org/class/yago/Album106591815>
+    64	<http://rorweb.com/0.1/Resource>
+    65	<http://www.aktors.org/ontology/portal#Conference-Proceedings-Reference>
+    66	<http://rdf.freebase.com/ns/type.content>
+    67	<http://www.aktors.org/ontology/portal#Town>
+    68	<http://www.rdfabout.com/rdf/schema/usbill/ShortTitle>
+    69	<http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag>
+    70	<http://rdf.freebase.com/ns/film.performance>
+    71	<http://rdf.freebase.com/ns/common.image>
+    72	<http://www.sitemaps.org/schemas/sitemap/0.9loc>
+    73	<http://www.aktors.org/ontology/portal#Proceedings-Paper-Reference>
+    74	<http://purl.uniprot.org/core/Resource>
+    75	<http://dbpedia.org/class/yago/Village108672738>
+    76	<http://rdfs.org/sioc/ns#UserGroup>
+    77	<http://www.rdfabout.com/rdf/schema/politico/Term>
+    78	<http://umbel.org/umbel/sc/Person>
+    79	<http://data.linkedmdb.org/resource/oddlinker/interlink>
+    80	<http://purl.uniprot.org/core/Range>
+    81	<http://purl.uniprot.org/core/Journal_Citation>
+    82	<http://dbpedia.org/ontology/Person>
+    83	<http://rdf.insee.fr/geo/Commune>
+    84	<http://purl.org/vocab/bio/0.1/Birth>
+    85	<http://purl.org/ontology/mo/Signal>
+    86	<http://inference-web.org/2.0/pml-provenance.owl#Information>
+    87	<http://rdf.freebase.com/ns/people.person>
+    88	<http://sites.wiwiss.fu-berlin.de/suhl/bizer/bookmashup/simpleCommerceVocab01.rdf#Offer>
+    89	<http://www.w3.org/2006/time#Interval>
+    90	<http://www.purl.org/stuff/rev#Review>
+    91	<http://lsdis.cs.uga.edu/projects/semdis/opus#Article>
+    92	<http://bio2rdf.org/uniprot:Sequence>
+    93	<http://www.rdfabout.com/rdf/schema/usbill/HouseBill>
+    94	<http://lsdis.cs.uga.edu/proj/semdis/testbed/#Company>
+    95	<http://www.rdfabout.com/rdf/schema/usbill/Amendment>
+    96	<http://rdf.freebase.com/ns/education.education>
+    97	<http://rdfs.org/sioc/types#Category>
+    98	<http://dbpedia.org/class/yago/Person100007846>
+    99	<http://rdf.freebase.com/ns/measurement_unit.rect_size>
+   100	<http://www.kisti.re.kr/isrl/ResearchRefOntology#PubInfo>
+   101	<http://dbpedia.org/class/yago/Movie106613686>
+   102	<http://knowledgeweb.semanticweb.org/heterogeneity/alignmentCell>
+   103	<http://www.w3.org/2006/vcard/ns#Address>
+   104	<http://dbpedia.org/class/yago/Landmark108624891>
+   105	<http://rdf.freebase.com/ns/common.webpage>
+   106	<http://inference-web.org/2.0/pml-justification.owl#NodeSetList>
+   107	<http://purl.uniprot.org/core/Domain_Assignment_Statement>
+   108	<http://dbpedia.org/ontology/Place>
+   109	<http://www.rdfabout.com/rdf/schema/ussec/TenPercentOwnerRelation>
+   110	<http://sw.opencyc.org/2008/06/10/concept/en/Individual>
+   111	<http://www.w3.org/2006/vcard/ns#Organization>
+   112	<http://tap.xmlns.com/data/Musician>
+   113	<http://tap.stanford.edu/data/Musician>
+   114	<http://rdfs.org/sioc/ns#Forum>
+   115	<http://dbpedia.org/ontology/Work>
+   116	<http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing>
+   117	<http://rdfs.org/sioc/ns#Usergroup>
+   118	<http://swat.cse.lehigh.edu/resources/onto/citeseer.owl#Record>
+   119	<http://www.w3.org/2002/12/cal/icaltzd#Vevent>
+   120	<http://xmdr.org/ont/iso11179-3e3draft_r4.owl#Link_End>
+   121	<http://data.linkedct.org/resource/linkedct/location>
+   122	<http://rdf.freebase.com/ns/location.location>
+   123	<http://www.kisti.re.kr/isrl/ResearchRefOntology#Institution>
+   124	<http://www.daml.org/2003/02/fips55/types#U8>
+   125	<http://scot-project.org/scot/ns#Cooccurrence>
+   126	<http://rdfs.org/sioc/types#ArgumentativeDiscussion>
+   127	<http://purl.org/dc/terms/W3CDTF>
+   128	<http://inference-web.org/2.0/pml-justification.owl#InferenceStep>
+   129	<http://data.linkedmdb.org/resource/movie/film>
+   130	<http://www.rdfabout.com/rdf/schema/usbill/SenateBill>
+   131	<http://umbel.org/umbel#SubjectConcept>
+   132	<http://dbpedia.org/ontology/PopulatedPlace>
+   133	<http://purl.org/dc/dcmitype/Text>
+   134	<http://dbpedia.org/class/yago/Artist109812338>
+   135	<http://www.daml.org/2003/02/fips55/types#T1>
+   136	<http://www.aktors.org/ontology/portal#Research-In-Academia>
+   137	<http://auswiki.org/index.php/Special:URIResolver/Category-3ASuburbs>
+   138	<http://purl.org/ontology/mo/MusicArtist>
+   139	<http://www.daml.org/2003/02/fips55/types#C1>
+   140	<http://dbpedia.org/class/yago/Actor109765278>
+   141	<http://umbel.org/umbel/ac/Artifact>
+   142	<http://dbpedia.org/ontology/Artist>
+   143	<http://swrc.ontoware.org/ontology#Person>
+   144	<http://athena.ics.forth.gr:9090/RDF/VRP/Examples/unspsc1.rdf#Commodity>
+   145	<http://dbpedia.org/class/yago/Site108651247>
+   146	<http://purl.uniprot.org/core/Sequence>
+   147	<http://rdf.freebase.com/ns/media_common.quotation>
+   148	<http://www.rdfabout.com/rdf/schema/usbill/VoteAction>
+   149	<http://purl.uniprot.org/core/Citation_Statement>
+   150	<http://www.aktors.org/ontology/portal#Postal-Address>
+   151	<http://www.biopax.org/release/biopax-level2.owl#physicalEntityParticipant>
+   152	<http://lsdis.cs.uga.edu/~farshad/events/EventSchema.rdf#TimeStamp>
+   153	<http://rdf.freebase.com/ns/business.employment_tenure>
+   154	<http://lsdis.cs.uga.edu/~farshad/events/EventSchema.rdf#Time>
+   155	<http://dbpedia.org/ontology/Organisation>
+   156	<http://sw.opencyc.org/2008/06/10/concept/Mx4rpPHhAOB1EdqAAAACs6hRXg>
+   157	<http://xmlns.com/foaf/corp#Company>
+   158	<http://dbpedia.org/class/yago/Medium106254669>
+   159	<http://www.rdfabout.com/rdf/schema/politico/Politician>
+   160	<http://dbpedia.org/class/yago/Company108058098>
+   161	<http://purl.org/dc/terms/RFC1766>
+   162	<http://www.daml.org/2003/02/fips55/types#U4>
+   163	<http://dbpedia.org/ontology/Species>
+   164	<http://dbpedia.org/ontology/MusicalWork>
+   165	<http://bio2rdf.org/uniprot:Cluster>
+   166	<http://dbpedia.org/ontology/Athlete>
+   167	<http://www.aktors.org/ontology/portal#Academic-Unit>
+   168	<http://purl.org/dc/terms/IMT>
+   169	<http://xmdr.org/ont/iso11179-3e3draft_r4.owl#Identification>
+   170	<http://rdf.freebase.com/ns/common.document>
+   171	<http://bio2rdf.org/omim#GeneticDisorder>
+   172	<http://www.aktors.org/ontology/portal#Thesis-Reference>
+   173	<http://swrc.ontoware.org/ontology#Proceedings>
+   174	<http://purl.oclc.org/NET/nknouf/ns/bibtex#inproceedings>
+   175	<http://dbpedia.org/class/yago/Player110439851>
+   176	<http://rdf.freebase.com/ns/people.place_lived>
+   177	<http://sw.opencyc.org/2008/06/10/concept/Mx4rvWXYgJwpEbGdrcN5Y29ycA>
+   178	<http://xmdr.org/ont/iso11179-3e3draft_r4.owl#Designatable_Item>
+   179	<http://www.affymetrix.com/community/publications/affymetrix/tmsplice#Transcript>
+   180	<http://ontologycentral.com/2009/01/eurostat/table_of_contents#tps00010>
+   181	<http://sw.opencyc.org/2008/06/10/concept/en/SpatiallyDisjointObjectType>
+   182	<http://sw.opencyc.org/concept/Mx4rpPHhAOB1EdqAAAACs6hRXg>
+   183	<http://www.ordnancesurvey.co.uk/ontology/AdministrativeGeography/v2.0/AdministrativeGeography.rdf#CivilParish>
+   184	<http://www.insurancegrid.org/vocabulary#Part>
+   185	<http://www.daml.org/2003/02/fips55/types#Z1>
+   186	<http://www.mygrid.org.uk/mygrid-moby-service#parameter>
+   187	<http://rdf.freebase.com/ns/location.dated_location>
+   188	<http://swat.cse.lehigh.edu/resources/onto/nsfaward.owl#NSFAward>
+   189	<http://swat.cse.lehigh.edu/resources/onto/dblp.owl#Article_in_Proceedings>
+   190	<http://purl.uniprot.org/core/Nucleotide_Resource>
+   191	<http://rdf.freebase.com/ns/people.deceased_person>
+   192	<http://metadata.net/WildNET/AnimalSighting.owl#AnimalSighting>
+   193	<http://www.rdfabout.com/rdf/schema/vote/PluralityVote>
+   194	<http://dbpedia.org/class/yago/AmericanFilmActors>
+   195	<http://dbpedia.org/class/yago/English-languageFilms>
+   196	<http://rdf.freebase.com/ns/location.statistical_region>
+   197	<http://www.mooney.net/restaurant#Restaurant>
+   198	<http://www.ifi.unizh.ch/ddis/ph/2006/08/ProcessHandbook.owl#Process>
+   199	<http://dbpedia.org/class/yago/AmericanFilms>
