@@ -3,8 +3,9 @@ package ru.ksu.niimm.cll.anduin
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
-import com.twitter.scalding.{Tsv, TypedTsv, JobTest, TupleConversions}
-import util.{FixedPathLzoTsv, FixedPathLzoTextLine}
+import com.twitter.scalding._
+import util.FixedPathLzoTextLine
+import com.twitter.scalding.Tsv
 
 /**
  * @author Nikita Zhiltsov 
@@ -19,16 +20,16 @@ object EntityTypeProcessorTestSpec extends Specification with TupleConversions {
       arg("inputTermEntityPairs", "inputTermEntityPairsFile").
       arg("inputTypeList", "inputTypeListFile").
       arg("output", "outputFile").
-      source(TypedTsv[(Int, String)]("inputTypeListFile"), List(
-      (0, "<http://xmlns.com/foaf/0.1/Person>"),
-      (1, "<http://rdfs.org/sioc/types#WikiArticle>"),
-      (2, "<http://purl.org/rss/1.0/item>")
+      source(TypedTsv[(String, String)]("inputTypeListFile"), List(
+      ("<http://xmlns.com/foaf/0.1/Person>", "0"),
+      ("<http://rdfs.org/sioc/types#WikiArticle>", "1"),
+      ("<http://purl.org/rss/1.0/item>", "2")
     ))
       .source(TypedTsv[(String, String)]("inputTermEntityPairsFile"), List(
       ("person", "<http://eprints.rkbexplorer.com/id/caltech/person-1>"),
       ("article", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>")
     ))
-      .source(new FixedPathLzoTextLine("inputFile"), List(
+      .source(TextLine("inputFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/rss/1.0/item> " +
@@ -44,7 +45,10 @@ object EntityTypeProcessorTestSpec extends Specification with TupleConversions {
         "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdfs.org/sioc/types#WikiArticle> <http://somecontext.com/4> ."),
       // 5th row
       ("4", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdfs.org/sioc/types#WikiArticle> <http://somecontext.com/10> .")
+        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdfs.org/sioc/types#WikiArticle> <http://somecontext.com/10> ."),
+      // 6th row
+      ("5", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
+        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdfs.org/sioc/types#MissingType> <http://somecontext.com/10> .")
     )).
       sink[(String, Int, Int)](Tsv("outputFile")) {
       outputBuffer =>

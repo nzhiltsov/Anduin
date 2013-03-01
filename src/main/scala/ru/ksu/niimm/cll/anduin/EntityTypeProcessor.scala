@@ -17,9 +17,9 @@ class EntityTypeProcessor(args: Args) extends Job(args) {
    * reads the predicates of interest
    */
   private val relevantTypes =
-    TypedTsv[(Int, String)](args("inputTypeList")).read.rename((0, 1) ->('relTypeId, 'relType))
+    TypedTsv[(String, String)](args("inputTypeList")).read.rename((0, 1) ->('relType, 'relTypeId))
 
-  private val typeStatements = new TextLine(args("input")).read.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
+  private val typeStatements = TextLine(args("input")).read.mapTo('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
   }.project(('subject, 'predicate, 'object)).filter(('subject, 'predicate)) {
     st: (Subject, Predicate) =>
@@ -32,9 +32,16 @@ class EntityTypeProcessor(args: Args) extends Job(args) {
 
   val wordWithTypes = entityWithTypes.joinWithLarger('subject -> 'entityUri, wordEntityPairs)
     .project(('word, 'relTypeId))
+    .filter('relTypeId) {
+    // todo: a workaround, don't realize why there are empty entries after inner join
+    field: String =>
+      field != null &&
+        !field.trim.isEmpty
+  }
 
   wordWithTypes.groupBy(('word, 'relTypeId)) {
     _.reducers(10).size('count)
-  }.write(Tsv(args("output")))
+  }.project(('word, 'relTypeId, 'count))
+    .write(Tsv(args("output")))
 
 }
