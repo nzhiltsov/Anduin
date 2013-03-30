@@ -20,10 +20,10 @@ object AdjacencyListProcessorTestSpec extends Specification with TupleConversion
       arg("input", "inputFile").
       arg("inputPredicateList", "inputPredicateListFile").
       arg("output", "outputFile")
-      .source(TypedTsv[(String, Int)]("inputPredicateListFile"), List(
-      ("<http://www.aktors.org/ontology/portal#has-author>", 0),
-      ("<http://www.aktors.org/ontology/portal#label>", 2),
-      ("<http://www.aktors.org/ontology/portal#knows>", 1)
+      .source(TypedTsv[(String, String)]("inputPredicateListFile"), List(
+      ("<http://www.aktors.org/ontology/portal#has-author>", "0"),
+      ("<http://www.aktors.org/ontology/portal#label>", "2"),
+      ("<http://www.aktors.org/ontology/portal#knows>", "1")
     ))
       .source(TextLine("inputFile"), List(
       // 1st row

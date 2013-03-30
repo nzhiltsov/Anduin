@@ -10,10 +10,10 @@ import com.twitter.scalding.{Tsv, TypedTsv, Job, Args}
  */
 class TensorHelperProcessor(args: Args) extends Job(args) {
 
-  private val adjacencyList = TypedTsv[(Int, String, String)](args("input")).read.rename((0, 1, 2) ->('predicateId, 'subject, 'object))
+  private val adjacencyList = TypedTsv[(String, String, String)](args("input")).read.rename((0, 1, 2) ->('predicateId, 'subject, 'object))
 
   private val entities =
-    TypedTsv[(Int, String)](args("inputEntityList")).read.rename((0, 1) ->('entityId, 'entityURI))
+    TypedTsv[(String, String)](args("inputEntityList")).read.rename((0, 1) ->('entityId, 'entityURI))
 
   val tensorEntries = adjacencyList.joinWithSmaller('subject -> 'entityURI, entities)
     .project(('predicateId, 'entityId, 'object)).rename('entityId -> 'subjectId)
