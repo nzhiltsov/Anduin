@@ -13,13 +13,13 @@ object NodeParserTest extends Specification {
   "Node parser" should {
     "extract nodes" in {
       val line = "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
-        "<http://www.aktors.org/ontology/portal#has-volume> \"72\" <http://somecontext.com/1> ."
+        "<http://www.aktors.org/ontology/portal#has-volume> \"72\"@en <http://somecontext.com/1> ."
       extractNodes(line) match {
         case (c, s, p, o) => {
           c mustEqual "<http://somecontext.com/1>"
           s mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
           p mustEqual "<http://www.aktors.org/ontology/portal#has-volume>"
-          o mustEqual "\"72\""
+          o mustEqual "\"72\"@en"
         }
         case _ => fail("didn't extract nodes")
       }

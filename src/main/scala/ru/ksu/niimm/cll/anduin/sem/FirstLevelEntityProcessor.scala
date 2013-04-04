@@ -21,7 +21,12 @@ class FirstLevelEntityProcessor(args: Args) extends Job(args) {
     .mapTo('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
   }
-
+  /**
+   * filters out non-English literals
+  */
   quads
+    .filter('object) {
+      range: Range => !range.contains("\"@") || range.contains("\"@en")
+  }
     .write(Tsv(args("output")))
 }
