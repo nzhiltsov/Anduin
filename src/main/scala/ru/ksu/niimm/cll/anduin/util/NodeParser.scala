@@ -52,7 +52,7 @@ object NodeParser {
     (subject, predicate, range.replace('\t', ' '))
   }
 
-  private val nameLikeAttributes = Array("label", "name", "title")
+  private val nameLikeAttributes = Array("label", "name", "title", "nick")
 
   /**
    * check if the predicate is 'name'-like, e.g. 'name', 'label', 'title' etc.
