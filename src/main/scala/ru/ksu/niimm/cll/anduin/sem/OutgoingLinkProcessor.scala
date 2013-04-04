@@ -93,35 +93,12 @@ class OutgoingLinkProcessor(args: Args) extends Job(args) {
   }
 
   /**
-   * entities with unresolved URIs
+   * combines both the pipes into the single final pipe
    */
-  private val entitiesWithUnresolvedURIs = firstLevelEntitiesWithURIsAsObjects
-    .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
-    .filter('object2) {
-    range: Range =>
-      range == null
-  }.project(('subject, 'predicate, 'object))
-    .map('object -> 'object) {
-    range: Range =>
-      stripURI(range)
-  }
-    .map('predicate -> 'predicatetype) {
-    predicate: Predicate => 2
-  }.unique(('predicatetype, 'subject, 'object))
-    .project(('predicatetype, 'subject, 'object))
-    .map('object -> 'object) {
-    range: Range =>
-      cleanHTMLMarkup(range)
-  }
+  private val mergedEntities = entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs
 
   /**
-   * combines all the pipes into the single final pipe
-   */
-  private val mergedEntities =
-    entitiesWithResolvedBNodes ++ entitiesWithResolvedURIs ++ entitiesWithUnresolvedURIs
-
-  /**
-   * cleans and outputs the data
+   * outputs the data
    */
   mergedEntities
     .unique(('predicatetype, 'subject, 'object))

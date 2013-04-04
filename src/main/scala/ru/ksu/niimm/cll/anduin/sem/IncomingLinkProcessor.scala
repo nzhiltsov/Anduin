@@ -51,32 +51,9 @@ class IncomingLinkProcessor(args: Args) extends Job(args) {
       .project(('predicatetype, 'subject, 'object))
 
   /**
-   * entities with unresolved incoming links, the unresolved URIs will be normalized
-   */
-  private val unresolvedIncomingLinks =
-    firstLevelEntitiesWithURIsAsObjects.joinWithSmaller(('subject -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
-      .filter('object2) {
-      range: Range =>
-        range == null
-    }.project(('object, 'subject)).rename(('object, 'subject) ->('subject, 'object))
-      .unique(('subject, 'object))
-      .map('object -> 'object) {
-      range: Range =>
-        stripURI(range)
-    }
-      .map('subject -> 'predicatetype) {
-      subject: Subject => 3
-    }
-      .project(('predicatetype, 'subject, 'object))
-  /**
-   * combines all the pipes into the single final pipe
-   */
-  private val mergedEntities = incomingLinks ++ unresolvedIncomingLinks
-
-  /**
    * cleans and outputs the data
    */
-  mergedEntities
+  incomingLinks
     .unique(('predicatetype, 'subject, 'object))
     .map('object -> 'object) {
     range: Range =>

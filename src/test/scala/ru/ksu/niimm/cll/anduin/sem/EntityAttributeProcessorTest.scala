@@ -10,11 +10,11 @@ import ru.ksu.niimm.cll.anduin.util.NodeParser._
  * @author Nikita Zhiltsov 
  */
 @RunWith(classOf[JUnitSuiteRunner])
-class NameLikeAttributeProcessorTest extends JUnit4(NameLikeAttributeProcessorTestSpec)
+class EntityAttributeProcessorTest extends JUnit4(NameLikeAttributeProcessorTestSpec)
 
 object NameLikeAttributeProcessorTestSpec extends Specification with TupleConversions {
   "The name-like attribute processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.sem.NameLikeAttributeProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.sem.EntityAttributeProcessor").
       arg("input", "inputFile").
       arg("output", "outputFile").
       source(TypedTsv[(Context, Subject, Predicate, Range)]("inputFile"), List(

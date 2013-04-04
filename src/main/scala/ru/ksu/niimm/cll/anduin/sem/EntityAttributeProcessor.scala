@@ -5,11 +5,11 @@ import ru.ksu.niimm.cll.anduin.util.NodeParser._
 
 /**
  * Given an input of quads,
- * this processor outputs the values of 'name'-like attributes
+ * this processor outputs the values of entity attributes distinguishing 'name'-like attributes
 
  * @author Nikita Zhiltsov 
  */
-class NameLikeAttributeProcessor(args: Args) extends Job(args) {
+class EntityAttributeProcessor(args: Args) extends Job(args) {
   private val firstLevelEntities =
     TypedTsv[(Context, Subject, Predicate, Range)](args("input")).read.rename((0, 1, 2, 3) ->('context, 'subject, 'predicate, 'object))
   /**
