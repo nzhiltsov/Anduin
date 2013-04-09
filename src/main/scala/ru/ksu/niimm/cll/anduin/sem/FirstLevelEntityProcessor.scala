@@ -20,13 +20,14 @@ class FirstLevelEntityProcessor(args: Args) extends Job(args) {
   }
     .mapTo('line ->('context, 'subject, 'predicate, 'object)) {
     line: String => extractNodes(line)
-  }
+  }.project(('subject, 'predicate, 'object))
   /**
    * filters out non-English literals
-  */
+   */
   quads
     .filter('object) {
-      range: Range => !range.contains("\"@") || range.contains("\"@en")
+    range: Range => !range.contains("\"@") || range.contains("\"@en")
   }
+    .unique(('subject, 'predicate, 'object))
     .write(Tsv(args("output")))
 }
