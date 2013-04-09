@@ -2,7 +2,7 @@ package ru.ksu.niimm.cll.anduin.sem
 
 import com.twitter.scalding.{Tsv, TypedTsv, Job, Args}
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
-import cascading.pipe.joiner.LeftJoin
+import cascading.pipe.joiner.InnerJoin
 
 /**
  * This processor resolves incoming links in entity descriptions
@@ -11,53 +11,29 @@ import cascading.pipe.joiner.LeftJoin
  */
 class IncomingLinkProcessor(args: Args) extends Job(args) {
   private val firstLevelEntities =
-    TypedTsv[(Context, Subject, Predicate, Range)](args("input")).read.rename((0, 1, 2, 3) ->('context, 'subject, 'predicate, 'object))
-  /**
-   * filters first level entities with URIs as subjects, i.e. candidates for further indexing
-   */
-  private val firstLevelEntitiesWithoutBNodes = firstLevelEntities.filter('subject) {
-    subject: Subject => subject.startsWith("<")
-  }
+    TypedTsv[(Subject, Predicate, Range)](args("inputFirstLevel")).read.rename((0, 1, 2) ->('subject, 'predicate, 'object))
+      .project(('subject, 'object))
+      .filter(('subject, 'object)) {
+      fields: (Subject, Range) => fields._1.startsWith("<") && fields._2.startsWith("<")
+    }
   /**
    * filters second level entities with URIs as objects, 'name'-like predicates and literal values;
    * merges the literal values
    */
   private val secondLevelEntities =
-    firstLevelEntitiesWithoutBNodes.rename(('context, 'subject, 'predicate, 'object) ->
-      ('context2, 'subject2, 'predicate2, 'object2)).project(('subject2, 'predicate2, 'object2))
-      .filter(('predicate2, 'object2)) {
-      fields: (Predicate, Range) => isNamePredicate(fields._1) && fields._2.startsWith("\"")
+    TypedTsv[(String, Subject, Range)](args("inputSecondLevel")).read.rename((0, 1, 2) ->('predicatetype, 'subject2, 'object2))
+      .filter('predicatetype) {
+      predicateType: String => predicateType.equals("0")
     }
-      .unique(('subject2, 'predicate2, 'object2))
-      .groupBy(('subject2, 'predicate2)) {
-      _.mkString('object2, " ")
-    }
-  /**
-   * filters first level entities with URIs as objects for resolution
-   */
-  private val firstLevelEntitiesWithURIsAsObjects = firstLevelEntitiesWithoutBNodes.filter('object) {
-    range: Range => range.startsWith("<")
-  }.project(('subject, 'predicate, 'object)).unique(('subject, 'predicate, 'object))
-  /**
-   * entities with resolved incoming links
-   */
-  private val incomingLinks =
-    firstLevelEntitiesWithURIsAsObjects.joinWithSmaller(('subject -> 'subject2), secondLevelEntities)
-      .project(('object, 'object2)).rename(('object, 'object2) ->('subject, 'object))
-      .unique(('subject, 'object))
-      .map('subject -> 'predicatetype) {
-      subject: Subject => 3
-    }
-      .project(('predicatetype, 'subject, 'object))
+      .project(('subject2, 'object2))
 
-  /**
-   * cleans and outputs the data
-   */
-  incomingLinks
-    .unique(('predicatetype, 'subject, 'object))
-    .map('object -> 'object) {
-    range: Range =>
-      cleanHTMLMarkup(range)
+  firstLevelEntities
+    .joinWithSmaller(('subject -> 'subject2), secondLevelEntities, joiner = new InnerJoin)
+    .project(('object, 'object2))
+    .rename(('object, 'object2) ->('subject, 'object))
+    .map('subject -> 'predicatetype) {
+    predicate: Predicate => 3
   }
+    .project(('predicatetype, 'subject, 'object))
     .write(Tsv(args("output")))
 }

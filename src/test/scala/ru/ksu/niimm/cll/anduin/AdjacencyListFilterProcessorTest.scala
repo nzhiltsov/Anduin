@@ -4,7 +4,8 @@ import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding._
-import util.NodeParser._
+import ru.ksu.niimm.cll.anduin.util.NodeParser.Subject
+import ru.ksu.niimm.cll.anduin.util.NodeParser.Range
 import com.twitter.scalding.Tsv
 import com.twitter.scalding.TextLine
 
