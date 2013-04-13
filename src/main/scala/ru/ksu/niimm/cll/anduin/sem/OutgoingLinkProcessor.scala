@@ -1,7 +1,7 @@
 package ru.ksu.niimm.cll.anduin.sem
 
 import com.twitter.scalding.{Tsv, TypedTsv, Job, Args}
-import cascading.pipe.joiner.InnerJoin
+import cascading.pipe.joiner.{LeftJoin, InnerJoin}
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 
 /**
@@ -32,12 +32,10 @@ class OutgoingLinkProcessor(args: Args) extends Job(args) {
    * resolves URIs as objects across the whole data set and saves the data
    */
   firstLevelEntities
-    .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new InnerJoin)
-    .project(('subject, 'object2))
-    .rename('object2 -> 'object)
-    .map('subject -> 'predicatetype) {
-    predicate: Predicate => 2
+    .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
+    .mapTo(('subject, 'object, 'subject2, 'object2) -> ('predicatetype, 'subject,'object)) {
+    fields: (Subject, Range, Subject, Range) =>
+      if (fields._4 == null) (2, fields._1, stripURI(fields._2).mkString("\"", "", "\"")) else (2, fields._1, fields._4)
   }
-    .project(('predicatetype, 'subject, 'object))
     .write(Tsv(args("output")))
 }

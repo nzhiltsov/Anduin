@@ -84,6 +84,6 @@ object NodeParser {
 
     relativePart.
       replaceAll(URL_ENCODING_ELEMENT_PATTERN, " ").replaceAll(HTML_ENCODING_ELEMENT_PATTERN, " ")
-      .replaceAll(SPECIAL_SYMBOL_PATTERN, " ")
+      .replaceAll(SPECIAL_SYMBOL_PATTERN, " ").trim
   }
 }

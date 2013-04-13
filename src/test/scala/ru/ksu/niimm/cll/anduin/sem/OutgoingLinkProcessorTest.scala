@@ -40,10 +40,11 @@ object OutgoingLinkProcessorTestSpec extends Specification with TupleConversions
       sink[(Int, Subject, Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct entity descriptions" in {
-          outputBuffer.size must_== 3
+          outputBuffer.size must_== 4
           outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>", "\"No. 1 RNA researcher 1\"")
           outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"Relevant name\"")
           outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"Other relevant name\"")
+          outputBuffer mustContain(2, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person\"")
         }
     }.run.
       finish
