@@ -5,6 +5,7 @@ import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding._
 import com.twitter.scalding.TextLine
+import ru.ksu.niimm.cll.anduin.util.NodeParser._
 
 /**
  * @author Nikita Zhiltsov 

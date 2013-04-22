@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin.type
+package ru.ksu.niimm.cll.anduin.entitytype
 
 import org.specs.runner.JUnit4
 import org.specs.Specification

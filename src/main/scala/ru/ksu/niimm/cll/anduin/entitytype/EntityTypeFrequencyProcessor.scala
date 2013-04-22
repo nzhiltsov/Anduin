@@ -1,8 +1,8 @@
-package ru.ksu.niimm.cll.anduin.type
+package ru.ksu.niimm.cll.anduin.entitytype
 
 import com.twitter.scalding.{Job, Args}
-import util.FixedPathLzoTsv
-import util.NodeParser._
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTsv
+import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import com.twitter.scalding.TextLine
 
 /**

@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin.type
+package ru.ksu.niimm.cll.anduin.entitytype
 
 import com.twitter.scalding.{Tsv, Job, Args, TypedTsv}
 

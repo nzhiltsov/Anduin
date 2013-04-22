@@ -1,7 +1,7 @@
-package ru.ksu.niimm.cll.anduin.type
+package ru.ksu.niimm.cll.anduin.entitytype
 
 import com.twitter.scalding._
-import util.NodeParser._
+import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import com.twitter.scalding.TextLine
 
 /**

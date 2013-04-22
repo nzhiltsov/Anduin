@@ -2,7 +2,6 @@ package ru.ksu.niimm.cll.anduin.adjacency
 
 import com.twitter.scalding._
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
-import scala.Range
 import com.twitter.scalding.Tsv
 import com.twitter.scalding.TextLine
 

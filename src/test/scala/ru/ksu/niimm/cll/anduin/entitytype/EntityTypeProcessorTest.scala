@@ -1,10 +1,9 @@
-package ru.ksu.niimm.cll.anduin.type
+package ru.ksu.niimm.cll.anduin.entitytype
 
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding._
-import util.FixedPathLzoTextLine
 import com.twitter.scalding.Tsv
 
 /**

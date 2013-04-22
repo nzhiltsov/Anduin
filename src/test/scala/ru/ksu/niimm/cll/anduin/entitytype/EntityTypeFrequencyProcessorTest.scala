@@ -1,10 +1,10 @@
-package ru.ksu.niimm.cll.anduin.type
+package ru.ksu.niimm.cll.anduin.entitytype
 
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding.{TextLine, JobTest, TupleConversions}
-import util.FixedPathLzoTsv
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTsv
 
 /**
  * @author Nikita Zhiltsov 

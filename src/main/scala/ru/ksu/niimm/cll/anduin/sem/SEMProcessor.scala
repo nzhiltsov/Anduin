@@ -2,7 +2,6 @@ package ru.ksu.niimm.cll.anduin.sem
 
 import com.twitter.scalding.{TypedTsv, Job, Args}
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
-import scala.Range
 import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTsv
 
 /**
