@@ -1,8 +1,9 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.sem
 
 import com.twitter.scalding.{TypedTsv, Job, Args}
-import util.{FixedPathLzoTsv, NodeParser}
-import NodeParser._
+import ru.ksu.niimm.cll.anduin.util.NodeParser._
+import scala.Range
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTsv
 
 /**
  * This processor implements aggregation of entity description with partial URI resolution according to the paper

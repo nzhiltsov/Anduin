@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.adjacency
 
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
@@ -17,7 +17,7 @@ class AdjacencyListFilterProcessorTest extends JUnit4(AdjacencyListFilterProcess
 
 object AdjacencyListFilterProcessorTestSpec extends Specification with TupleConversions {
   "Adjacency list filter processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.AdjacencyListFilterProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.adjacency.AdjacencyListFilterProcessor").
       arg("input", "inputFile").
       arg("inputEntities", "inputEntitiesFile").
       arg("inputPredicates", "inputPredicateFile").

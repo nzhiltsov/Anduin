@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.type
 
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
@@ -14,8 +14,8 @@ import com.twitter.scalding.Tsv
 class EntityTypeProcessorTest extends JUnit4(EntityTypeProcessorTestSpec)
 
 object EntityTypeProcessorTestSpec extends Specification with TupleConversions {
-  "Entity type processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.EntityTypeProcessor").
+  "Entity entitytype processor job" should {
+    JobTest("ru.ksu.niimm.cll.anduin.entitytype.EntityTypeProcessor").
       arg("input", "inputFile").
       arg("inputTermEntityPairs", "inputTermEntityPairsFile").
       arg("inputTypeList", "inputTypeListFile").
@@ -32,23 +32,23 @@ object EntityTypeProcessorTestSpec extends Specification with TupleConversions {
       .source(TextLine("inputFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
-        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/rss/1.0/item> " +
+        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype> <http://purl.org/rss/1.0/item> " +
         "<http://somecontext.com/1> ."),
       // 2nd row
       ("1", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
         "<http://www.aktors.org/ontology/portal#knows> <http://eprints.rkbexplorer.com/id/caltech/person-2> <http://somecontext.com/1> ."),
       // 3rd row
       ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://somecontext.com/6> ."),
+        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype> <http://xmlns.com/foaf/0.1/Person> <http://somecontext.com/6> ."),
       // 4th row
       ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdfs.org/sioc/types#WikiArticle> <http://somecontext.com/4> ."),
+        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype> <http://rdfs.org/sioc/types#WikiArticle> <http://somecontext.com/4> ."),
       // 5th row
       ("4", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdfs.org/sioc/types#WikiArticle> <http://somecontext.com/10> ."),
+        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype> <http://rdfs.org/sioc/types#WikiArticle> <http://somecontext.com/10> ."),
       // 6th row
       ("5", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdfs.org/sioc/types#MissingType> <http://somecontext.com/10> .")
+        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype> <http://rdfs.org/sioc/types#MissingType> <http://somecontext.com/10> .")
     )).
       sink[(String, Int, Int)](Tsv("outputFile")) {
       outputBuffer =>

@@ -1,11 +1,9 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.adjacency
 
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding._
-import util.NodeParser
-import NodeParser._
 import com.twitter.scalding.TextLine
 
 /**
@@ -16,7 +14,7 @@ class AdjacencyListProcessorTest extends JUnit4(AdjacencyListProcessorTestSpec)
 
 object AdjacencyListProcessorTestSpec extends Specification with TupleConversions {
   "Adjacency list processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.AdjacencyListProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.adjacency.AdjacencyListProcessor").
       arg("input", "inputFile").
       arg("inputPredicateList", "inputPredicateListFile").
       arg("output", "outputFile")

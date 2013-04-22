@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.type
 
 import com.twitter.scalding._
 import util.NodeParser._
@@ -11,7 +11,7 @@ import com.twitter.scalding.TextLine
  * @author Nikita Zhiltsov 
  */
 class EntityTypeProcessor(args: Args) extends Job(args) {
-  val RDF_TYPE_PREDICATE = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
+  val RDF_TYPE_PREDICATE = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype>"
   private val wordEntityPairs = TypedTsv[(String, String)](args("inputTermEntityPairs")).read.rename((0, 1) ->('word, 'entityUri))
   /**
    * reads the predicates of interest

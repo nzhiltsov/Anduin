@@ -1,10 +1,8 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.sem
 
 import org.junit.runner.RunWith
 import org.specs.Specification
 import com.twitter.scalding._
-import util.{FixedPathLzoTsv, NodeParser}
-import NodeParser._
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 
 /**
@@ -15,7 +13,7 @@ class SEMProcessorTest extends JUnit4(SEMProcessorTestSpec)
 
 object SEMProcessorTestSpec extends Specification with TupleConversions {
   "The SEM processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.SEMProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.sem.SEMProcessor").
       arg("inputNameLike", "inputNameLikeFile").
       arg("inputOutgoingLinks", "inputOutgoingLinksFile").
       arg("inputIncomingLinks", "inputIncomingLinksFile").

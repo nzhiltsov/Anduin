@@ -1,7 +1,6 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.adjacency
 
 import com.twitter.scalding._
-import util.{FixedPathLzoTextLine, FixedPathLzoTsv}
 import com.twitter.scalding.TextLine
 
 /**

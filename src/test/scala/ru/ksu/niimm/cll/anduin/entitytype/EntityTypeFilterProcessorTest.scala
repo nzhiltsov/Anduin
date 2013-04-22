@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.type
 
 import org.specs.runner.JUnit4
 import org.specs.Specification
@@ -11,7 +11,7 @@ class EntityTypeFilterProcessorTest extends JUnit4(EntityTypeFilterProcessorSpec
 
 object EntityTypeFilterProcessorSpec extends Specification with TupleConversions {
   "Entity processor " should {
-    JobTest("ru.ksu.niimm.cll.anduin.EntityTypeFilterProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.entitytype.EntityTypeFilterProcessor").
       arg("input", "inputFile").
       arg("inputEntityList", "inputEntityListFile").
       arg("output", "outputFile").

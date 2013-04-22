@@ -1,8 +1,10 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.adjacency
 
 import com.twitter.scalding._
-import util.NodeParser
-import NodeParser._
+import ru.ksu.niimm.cll.anduin.util.NodeParser._
+import scala.Range
+import com.twitter.scalding.Tsv
+import com.twitter.scalding.TextLine
 
 /**
  * This processor outputs adjacency lists filtered and grouped by given predicates in the form of:
