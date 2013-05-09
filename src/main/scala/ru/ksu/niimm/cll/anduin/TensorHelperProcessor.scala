@@ -4,7 +4,7 @@ import com.twitter.scalding.{Tsv, TypedTsv, Job, Args}
 import ru.ksu.niimm.cll.anduin.adjacency.AdjacencyListProcessor
 
 /**
- * Given an adjacency list (see the output of [[AdjacencyListProcessor]]]),
+ * Given an adjacency list (see the output of [[ru.ksu.niimm.cll.anduin.adjacency.AdjacencyListProcessor]]]),
  * this processor outputs the tensor entries (first - rows, then - columns) sorted by their slice indices (i.e., predicateId)
  *
  * @author Nikita Zhiltsov 
