@@ -1,20 +1,19 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.adjacency
 
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding._
-import util.FixedPathLzoTsv
 
 /**
  * @author Nikita Zhiltsov 
  */
 @RunWith(classOf[JUnitSuiteRunner])
-class PredicateFrequencyProcessorTest extends JUnit4(TopPredicateFinderProcessorTestSpec)
+class CollectionPredicateFrequencyProcessorTest extends JUnit4(TopPredicateFinderProcessorTestSpec)
 
 object TopPredicateFinderProcessorTestSpec extends Specification with TupleConversions {
   "The top predicate finder processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.PredicateFrequencyProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.adjacency.CollectionPredicateFrequencyProcessor").
       arg("input", "inputFile").
       arg("output", "outputFile").
       source(TextLine("inputFile"),
@@ -33,7 +32,7 @@ object TopPredicateFinderProcessorTestSpec extends Specification with TupleConve
         ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
           "<http://www.aktors.org/ontology/portal#label> <http://eprints.rkbexplorer.com/id/caltech/eprints-7519> <http://somecontext.com/1> .")
       ))
-      .sink[(String, Int)](new FixedPathLzoTsv("outputFile")) {
+      .sink[(String, Int)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct top predicates" in {
           outputBuffer.size must_== 2

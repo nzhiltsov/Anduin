@@ -1,16 +1,15 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.adjacency
 
-import com.twitter.scalding.{Job, Args}
-import util.FixedPathLzoTsv
-import util.NodeParser._
+import com.twitter.scalding._
+import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import com.twitter.scalding.TextLine
 
 /**
- * This processor outputs unique predicates (object properties) with their frequencies
+ * This processor outputs unique predicates (object properties) with their frequencies for the whole collection
  *
  * @author Nikita Zhiltsov 
  */
-class PredicateFrequencyProcessor(args: Args) extends Job(args) {
+class CollectionPredicateFrequencyProcessor(args: Args) extends Job(args) {
   /**
    * reads the triples
    */
@@ -27,5 +26,5 @@ class PredicateFrequencyProcessor(args: Args) extends Job(args) {
     _.size('count)
   }.groupAll {
     _.sortBy('count).reverse
-  }.project(('predicate, 'count)).write(new FixedPathLzoTsv(args("output")))
+  }.project(('predicate, 'count)).write(Tsv(args("output")))
 }
