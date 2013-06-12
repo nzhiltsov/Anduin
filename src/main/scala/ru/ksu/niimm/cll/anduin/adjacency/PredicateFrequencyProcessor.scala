@@ -3,19 +3,20 @@ package ru.ksu.niimm.cll.anduin.adjacency
 import com.twitter.scalding._
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import com.twitter.scalding.TextLine
+import scala.io.Source
 
 /**
- * Given a list of entities,
- * this processor outputs frequencies of predicates between these entities
+ * Given two lists of entities,
+ * this processor outputs frequencies of predicates as edges in the bipartite graph
  *
  * @author Nikita Zhiltsov 
  */
 class PredicateFrequencyProcessor(args: Args) extends Job(args) {
-  private val relevantEntities = TextLine(args("inputEntities")).read.rename('line -> 'entityUri1).project('entityUri1)
+  private val firstEntities =
+    Source.fromInputStream(getClass.getResourceAsStream(args("inputFirstEntities"))).getLines.toList
 
-  private val sameRelevantEntities = relevantEntities.rename('entityUri1 -> 'entityUri2)
-
-  private val entityPairs = relevantEntities.crossWithTiny(sameRelevantEntities)
+  private val secondEntities =
+    Source.fromInputStream(getClass.getResourceAsStream(args("inputSecondEntities"))).getLines.toList
 
   private val triples = TextLine(args("input")).read.mapTo('line ->('subject, 'predicate, 'object)) {
     line: String =>
@@ -23,11 +24,11 @@ class PredicateFrequencyProcessor(args: Args) extends Job(args) {
       (nodes._2, nodes._3, nodes._4)
   }.filter(('subject, 'object)) {
     fields: (Subject, Range) =>
-      fields._1.startsWith("<") && fields._2.startsWith("<")
-  }.unique(('subject, 'predicate, 'object))
+      (firstEntities.contains(fields._1) && secondEntities.contains(fields._2)) ||
+        (firstEntities.contains(fields._2) && secondEntities.contains(fields._1))
+  }
 
-  triples.joinWithTiny(('subject, 'object) -> ('entityUri1, 'entityUri2), entityPairs)
-    .project(('predicate)).
+  triples.project(('predicate)).
     groupBy('predicate) {
     _.size('count)
   }.groupAll {

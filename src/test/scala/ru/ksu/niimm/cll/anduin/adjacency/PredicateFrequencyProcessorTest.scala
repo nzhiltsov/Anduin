@@ -14,13 +14,10 @@ class PredicateFrequencyProcessorTest extends JUnit4(PredicateFrequencyProcessor
 object PredicateFrequencyProcessorTestSpec extends Specification with TupleConversions {
   "The processor job" should {
     JobTest("ru.ksu.niimm.cll.anduin.adjacency.PredicateFrequencyProcessor").
-      arg("inputEntities", "inputEntitiesFile").
+      arg("inputFirstEntities", "/test.first.entities.txt").
+      arg("inputSecondEntities", "/test.second.entities.txt").
       arg("input", "inputFile").
       arg("output", "outputFile")
-      .source(TextLine("inputEntitiesFile"), List(
-      ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"),
-      ("1", "<http://eprints.rkbexplorer.com/id/caltech/person-1>")
-    ))
       .source(TextLine("inputFile"),
       List(
         // 1st row
