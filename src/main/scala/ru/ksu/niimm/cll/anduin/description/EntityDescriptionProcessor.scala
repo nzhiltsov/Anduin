@@ -6,7 +6,7 @@ import com.twitter.scalding.TextLine
 
 /**
  * Given a list of entity URIs,
- * this processor, for each entity, groups all the triples that have the entity as subject.
+ * this processor, for each entity, groups all the triples that have the entity as a subject.
  *
  * @author Nikita Zhiltsov 
  */
