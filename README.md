@@ -7,7 +7,7 @@ Anduin is a lightweight tool to process RDF/N-Quads formatted data using Hadoop.
 
 Current Version
 ------------
-[0.1](https://github.com/nzhiltsov/Anduin/archive/0.1.zip)
+[0.1.1](https://github.com/nzhiltsov/Anduin/archive/0.1.1.zip)
 
 Features
 ------------
@@ -20,6 +20,12 @@ Prerequisites
 * Java 1.6+
 * Scala 2.9.2+
 * tested on Apache Hadoop 1.1
+
+License
+---------------------
+
+Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+
 
 
 
