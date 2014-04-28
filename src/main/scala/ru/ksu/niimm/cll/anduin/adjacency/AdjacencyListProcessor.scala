@@ -3,7 +3,7 @@ package ru.ksu.niimm.cll.anduin.adjacency
 import com.twitter.scalding._
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import com.twitter.scalding.Tsv
-import com.twitter.scalding.TextLine
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
  * This processor outputs adjacency lists filtered and grouped by given predicates in the form of:
@@ -17,6 +17,10 @@ import com.twitter.scalding.TextLine
  * @author Nikita Zhiltsov 
  */
 class AdjacencyListProcessor(args: Args) extends Job(args) {
+  private val inputFormat = args("inputFormat")
+
+  def isNquad = inputFormat.equals("nquad")
+
   /**
    * reads the predicates of interest
    */
@@ -25,10 +29,16 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
   /**
    * reads the entity triples
    */
-  private val triples = TextLine(args("input")).read.mapTo('line ->('subject, 'predicate, 'object)) {
+  private val triples = new FixedPathLzoTextLine(args("input")).read.filter('line) {
     line: String =>
-      val nodes = extractNodes(line)
-      (nodes._2, nodes._3, nodes._4)
+      val cleanLine = line.trim
+      cleanLine.startsWith("<")
+  }.mapTo('line ->('subject, 'predicate, 'object)) {
+    line: String =>
+      if (isNquad) {
+        val nodes = extractNodes(line)
+        (nodes._2, nodes._3, nodes._4)
+      } else extractNodesFromN3(line)
   }.filter(('subject, 'object)) {
     fields: (Subject, Range) =>
       fields._1.startsWith("<") && fields._2.startsWith("<")

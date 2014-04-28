@@ -22,7 +22,7 @@ object NodeParser {
     val endSubject = line match {
       case l if l.startsWith("_") => line.indexOf(" ") // blank node
       case l if l.startsWith("<") => line.indexOf(">") + 1
-      case _ => throw new Exception("can't process such a line")
+      case _ => throw new Exception("can't process such a line: " + line)
     }
     val startContext = line.lastIndexOf("<")
     val endContext = line.lastIndexOf(">") + 1
@@ -34,6 +34,23 @@ object NodeParser {
     val predicate = line.substring(startPredicate, endPredicate)
     val range = line.substring(endPredicate, startContext).trim
     (context, subject, predicate, range.replace('\t', ' '))
+  }
+
+  def extractNodesFromN3(line: String): (Subject, Predicate, Range) = {
+
+    val endSubject = line match {
+      case l if l.startsWith("_") => line.indexOf(" ") // blank node
+      case l if l.startsWith("<") => line.indexOf(">") + 1
+      case _ => throw new Exception("can't process such a line: " + line)
+    }
+    val startPredicate = line.indexOf("<", endSubject)
+    val endPredicate = line.indexOf(">", startPredicate) + 1
+    val endingDot = line.lastIndexOf(".") - 1
+
+    val subject = line.substring(0, endSubject)
+    val predicate = line.substring(startPredicate, endPredicate)
+    val range = line.substring(endPredicate + 1, endingDot)
+    (subject, predicate, range.replace('\t', ' '))
   }
 
   def extractNodesFromNTuple(line: String): (Subject, Predicate, Range) = {

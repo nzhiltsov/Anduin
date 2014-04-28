@@ -19,9 +19,9 @@ class AdjacencyListFilterProcessor(args: Args) extends Job(args) {
     .read.rename((0, 1, 2) ->('predicateId, 'subject, 'object))
     .joinWithTiny('predicateId -> 'relPredicateId, relevantPredicates).project(('relPredicateId, 'subject, 'object))
 
-  private val subjectEntries = edges.joinWithTiny('subject -> 'entityURI, relevantEntities).project(('relPredicateId, 'subject, 'object))
+  private val subjectEntries = edges.joinWithSmaller('subject -> 'entityURI, relevantEntities).project(('relPredicateId, 'subject, 'object))
 
-  private val objectEntries = edges.joinWithTiny('object -> 'entityURI, relevantEntities).project(('relPredicateId, 'subject, 'object))
+  private val objectEntries = edges.joinWithSmaller('object -> 'entityURI, relevantEntities).project(('relPredicateId, 'subject, 'object))
 
   private val filteredEntries = subjectEntries ++ objectEntries
 
