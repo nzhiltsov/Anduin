@@ -1,10 +1,10 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.degree
 
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding.{TupleConversions, Tsv, TextLine, JobTest}
-import util.NodeParser._
+import ru.ksu.niimm.cll.anduin.util.NodeParser
 
 /**
  * @author Nikita Zhiltsov 
@@ -14,7 +14,7 @@ class OutDegreeProcessorTest extends JUnit4(OutDegreeProcessorTestSpec)
 
 object OutDegreeProcessorTestSpec extends Specification with TupleConversions {
   "Out degree processor" should {
-    JobTest("ru.ksu.niimm.cll.anduin.OutDegreeProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.degree.OutDegreeProcessor").
       arg("input", "inputFile").
       arg("output", "outputFile").
       source(TextLine("inputFile"), List(
@@ -29,7 +29,7 @@ object OutDegreeProcessorTestSpec extends Specification with TupleConversions {
       ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
         "<http://www.aktors.org/ontology/portal#label> \"No. 1 RNA researcher\" <http://somecontext.com/1> .")
     )).
-      sink[(Subject, Int)](Tsv("outputFile")) {
+      sink[(NodeParser.Subject, Int)](Tsv("outputFile")) {
       outputBuffer =>
         "output correct ntuples" in {
           outputBuffer.size must_== 2

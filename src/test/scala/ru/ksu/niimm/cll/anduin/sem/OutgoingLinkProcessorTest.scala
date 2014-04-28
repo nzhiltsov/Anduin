@@ -3,9 +3,9 @@ package ru.ksu.niimm.cll.anduin.sem
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
-import com.twitter.scalding.{Tsv, TypedTsv, JobTest, TupleConversions}
+import com.twitter.scalding._
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
-import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTsv
+import com.twitter.scalding.Tsv
 
 /**
  * @author Nikita Zhiltsov 
@@ -24,18 +24,18 @@ object OutgoingLinkProcessorTestSpec extends Specification with TupleConversions
       ("1", "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"<body><p>123</p></body>\""),
       ("0", "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>", "\"Relevant name\""),
       ("0", "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>", "\"Other relevant name\"")))
-      .source(TypedTsv[(Subject, Predicate, Range)]("inputFirstLevelFile"), List(
+      .source(TextLine("inputFirstLevelFile"), List(
       // 1st row
-      ("<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>",
-        "<http://www.aktors.org/ontology/portal#has-author>", "<http://eprints.rkbexplorer.com/id/caltech/person-1>"),
+      ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
+        "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> ."),
       // 2nd row
-      ("<http://eprints.rkbexplorer.com/id/caltech/person-1>",
-        "<http://www.aktors.org/ontology/portal#knows>", "<http://eprints.rkbexplorer.com/id/caltech/person-2>"),
+      ("1", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
+        "<http://www.aktors.org/ontology/portal#knows> <http://eprints.rkbexplorer.com/id/caltech/person-2> ."),
       // 4th row
-      ("<http://eprints.rkbexplorer.com/id/caltech/person-2>",
-        "<http://www.aktors.org/ontology/portal#redirect>", "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>"),
+      ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-2> " +
+        "<http://www.aktors.org/ontology/portal#redirect> <http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)> ."),
       // 5th row
-      ("<http://eprints.rkbexplorer.com/id/caltech/person-2>", "<http://www.aktors.org/ontology/portal#label>", "\"Person 2\"")
+      ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-2> <http://www.aktors.org/ontology/portal#label> \"Person 2\" .")
     )).
       sink[(Int, Subject, Range)](Tsv("outputFile")) {
       outputBuffer =>

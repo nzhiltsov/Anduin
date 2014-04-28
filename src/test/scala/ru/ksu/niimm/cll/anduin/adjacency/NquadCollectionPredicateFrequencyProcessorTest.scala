@@ -9,13 +9,14 @@ import com.twitter.scalding._
  * @author Nikita Zhiltsov 
  */
 @RunWith(classOf[JUnitSuiteRunner])
-class CollectionPredicateFrequencyProcessorTest extends JUnit4(TopPredicateFinderProcessorTestSpec)
+class NquadCollectionPredicateFrequencyProcessorTest extends JUnit4(NquadTopPredicateFinderProcessorTestSpec)
 
-object TopPredicateFinderProcessorTestSpec extends Specification with TupleConversions {
+object NquadTopPredicateFinderProcessorTestSpec extends Specification with TupleConversions {
   "The top predicate finder processor job" should {
     JobTest("ru.ksu.niimm.cll.anduin.adjacency.CollectionPredicateFrequencyProcessor").
       arg("input", "inputFile").
       arg("output", "outputFile").
+      arg("inputFormat", "nquad").
       source(TextLine("inputFile"),
       List(
         // 1st row
@@ -29,7 +30,7 @@ object TopPredicateFinderProcessorTestSpec extends Specification with TupleConve
         ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
           "<http://www.aktors.org/ontology/portal#label> \"No. 1 RNA researcher\" <http://somecontext.com/1> ."),
         // 4th row
-        ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
+        ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
           "<http://www.aktors.org/ontology/portal#label> <http://eprints.rkbexplorer.com/id/caltech/eprints-7519> <http://somecontext.com/1> .")
       ))
       .sink[(String, Int)](Tsv("outputFile")) {

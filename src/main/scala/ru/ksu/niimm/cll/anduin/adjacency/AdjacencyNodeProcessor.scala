@@ -2,9 +2,10 @@ package ru.ksu.niimm.cll.anduin.adjacency
 
 import com.twitter.scalding._
 import com.twitter.scalding.TextLine
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
- * Given an adjacency list, this processor outputs the sorted list of unique entities
+ * Given an adjacency list, this processor outputs the list of unique entities
  *
  * @author Nikita Zhiltsov 
  */
@@ -17,7 +18,5 @@ class AdjacencyNodeProcessor(args: Args) extends Job(args) {
 
   private val nodes = subjects ++ objects
 
-  nodes.unique('subject).groupBy('subject) {
-    _.reducers(10).sortBy('subject)
-  }.write(TextLine(args("output")))
+  nodes.unique('subject).write(new FixedPathLzoTextLine(args("output")))
 }

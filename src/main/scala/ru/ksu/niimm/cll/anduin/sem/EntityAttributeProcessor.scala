@@ -1,7 +1,8 @@
 package ru.ksu.niimm.cll.anduin.sem
 
-import com.twitter.scalding.{TypedTsv, Job, Args, Tsv}
+import com.twitter.scalding.{Job, Args, Tsv}
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
  * Given an input of quads,
@@ -10,13 +11,22 @@ import ru.ksu.niimm.cll.anduin.util.NodeParser._
  * @author Nikita Zhiltsov 
  */
 class EntityAttributeProcessor(args: Args) extends Job(args) {
-  private val firstLevelEntities =
-    TypedTsv[(Context, Subject, Predicate, Range)](args("input")).read.rename((0, 1, 2, 3) ->('context, 'subject, 'predicate, 'object))
-  /**
-   * filters first level entities with URIs as subjects, i.e. candidates for further indexing
-   */
-  private val firstLevelEntitiesWithoutBNodes = firstLevelEntities.filter('subject) {
-    subject: Subject => subject.startsWith("<")
+  private val inputFormat = args("inputFormat")
+
+  def isNquad = inputFormat.equals("nquad")
+
+  private val firstLevelEntitiesWithoutBNodes = new FixedPathLzoTextLine(args("input")).read
+    .filter('line) {
+    line: String =>
+      val cleanLine = line.trim
+      cleanLine.startsWith("<")
+  }
+    .mapTo('line ->('subject, 'predicate, 'object)) {
+    line: String =>
+      if (isNquad) {
+        val nodes = extractNodes(line)
+        (nodes._2, nodes._3, nodes._4)
+      } else extractNodesFromN3(line)
   }
 
   /**
@@ -24,7 +34,7 @@ class EntityAttributeProcessor(args: Args) extends Job(args) {
    */
   private val firstLevelEntitiesWithLiterals = firstLevelEntitiesWithoutBNodes.filter('object) {
     range: Range => range.startsWith("\"")
-  }.project(('subject, 'predicate, 'object)).unique(('subject, 'predicate, 'object)).groupBy(('subject, 'predicate)) {
+  }.unique(('subject, 'predicate, 'object)).groupBy(('subject, 'predicate)) {
     _.mkString('object, " ")
   }.map('predicate -> 'predicatetype) {
     predicate: Predicate => if (isNamePredicate(predicate)) 0 else 1

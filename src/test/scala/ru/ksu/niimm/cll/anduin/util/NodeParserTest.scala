@@ -11,7 +11,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 object NodeParserTest extends Specification {
   "Node parser" should {
-    "extract nodes" in {
+    "extract nodes from n-quad" in {
       val line = "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.aktors.org/ontology/portal#has-volume> \"72\"@en <http://somecontext.com/1> ."
       extractNodes(line) match {
@@ -20,6 +20,38 @@ object NodeParserTest extends Specification {
           s mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
           p mustEqual "<http://www.aktors.org/ontology/portal#has-volume>"
           o mustEqual "\"72\"@en"
+        }
+        case _ => fail("didn't extract nodes")
+      }
+    }
+    "extract nodes from n3" in {
+      val line = "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
+        "<http://www.aktors.org/ontology/portal#has-volume> \"72\"@en ."
+      extractNodesFromN3(line) match {
+        case (s, p, o) => {
+          s mustEqual "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"
+          p mustEqual "<http://www.aktors.org/ontology/portal#has-volume>"
+          o mustEqual "\"72\"@en"
+        }
+        case _ => fail("didn't extract nodes")
+      }
+      val line2 = "<http://dbpedia.org/resource/Abraham_Lincoln> " +
+        "<http://dbpedia.org/ontology/serviceEndYear> \"1832\"^^<http://www.w3.org/2001/XMLSchema#gYear> ."
+      extractNodesFromN3(line2) match {
+        case (s, p, o) => {
+          s mustEqual "<http://dbpedia.org/resource/Abraham_Lincoln>"
+          p mustEqual "<http://dbpedia.org/ontology/serviceEndYear>"
+          o mustEqual "\"1832\"^^<http://www.w3.org/2001/XMLSchema#gYear>"
+        }
+        case _ => fail("didn't extract nodes")
+      }
+      val line3 = "<http://dbpedia.org/resource/Abraham_Lincoln>" +
+        " <http://dbpedia.org/ontology/successor> <http://dbpedia.org/resource/Thomas_L._Harris> ."
+      extractNodesFromN3(line3) match {
+        case (s, p, o) => {
+          s mustEqual "<http://dbpedia.org/resource/Abraham_Lincoln>"
+          p mustEqual "<http://dbpedia.org/ontology/successor>"
+          o mustEqual "<http://dbpedia.org/resource/Thomas_L._Harris>"
         }
         case _ => fail("didn't extract nodes")
       }
@@ -56,17 +88,17 @@ object NodeParserTest extends Specification {
         "http://dbpedia.org/property/birthName",
         "http://dbpedia.org/property/name",
         "http://www.w3.org/2000/01/rdf-schema#label",
-      "http://xmlns.com/foaf/0.1/surname",
-      "http://dbpedia.org/property/name",
-      "http://xmlns.com/foaf/0.1/accountName",
-      "http://dbpedia.org/ontology/formerName",
-      "http://dbpedia.org/property/formerNames",
-      "http://dbpedia.org/property/title",
-      "http://dbpedia.org/property/englishTitle",
-      "http://xmlns.com/foaf/0.1/nick",
-      "http://purl.org/dc/elements/1.1/title")
+        "http://xmlns.com/foaf/0.1/surname",
+        "http://dbpedia.org/property/name",
+        "http://xmlns.com/foaf/0.1/accountName",
+        "http://dbpedia.org/ontology/formerName",
+        "http://dbpedia.org/property/formerNames",
+        "http://dbpedia.org/property/title",
+        "http://dbpedia.org/property/englishTitle",
+        "http://xmlns.com/foaf/0.1/nick",
+        "http://purl.org/dc/elements/1.1/title")
       positivePredicates.forall(isNamePredicate) must_== true
-      val negativePredicates =List("http://www.w3.org/2000/01/rdf-schema#comment",
+      val negativePredicates = List("http://www.w3.org/2000/01/rdf-schema#comment",
         "http://dbpedia.org/property/caption",
         "http://dbpedia.org/ontology/abstract")
       negativePredicates.exists(isNamePredicate) must_== false

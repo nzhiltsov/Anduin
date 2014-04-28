@@ -1,7 +1,9 @@
-package ru.ksu.niimm.cll.anduin
+package ru.ksu.niimm.cll.anduin.degree
 
-import com.twitter.scalding.{Tsv, Job, Args, TextLine}
-import util.NodeParser._
+import com.twitter.scalding.{Job, Args}
+import ru.ksu.niimm.cll.anduin.util.NodeParser._
+import com.twitter.scalding.Tsv
+import com.twitter.scalding.TextLine
 
 /**
  * This processor computes out degrees of entities in the RDF graph.

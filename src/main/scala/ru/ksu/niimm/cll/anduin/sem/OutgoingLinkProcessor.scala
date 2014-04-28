@@ -1,8 +1,9 @@
 package ru.ksu.niimm.cll.anduin.sem
 
 import com.twitter.scalding.{Tsv, TypedTsv, Job, Args}
-import cascading.pipe.joiner.{LeftJoin, InnerJoin}
+import cascading.pipe.joiner.LeftJoin
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
  * This processor resolves outgoing links in entity descriptions
@@ -11,8 +12,16 @@ import ru.ksu.niimm.cll.anduin.util.NodeParser._
  */
 class OutgoingLinkProcessor(args: Args) extends Job(args) {
   private val firstLevelEntities =
-    TypedTsv[(Subject, Predicate, Range)](args("inputFirstLevel")).read.rename((0, 1, 2) ->('subject, 'predicate, 'object))
-      .project(('subject, 'object))
+    new FixedPathLzoTextLine(args("inputFirstLevel")).read.filter('line) {
+      line: String =>
+        val cleanLine = line.trim
+        cleanLine.startsWith("<")
+    }
+      .mapTo('line ->('subject, 'object)) {
+      line: String =>
+        val triple = extractNodesFromN3(line)
+        (triple._1, triple._3)
+    }
       .filter(('subject, 'object)) {
       fields: (Subject, Range) => fields._1.startsWith("<") && fields._2.startsWith("<")
     }
@@ -33,7 +42,7 @@ class OutgoingLinkProcessor(args: Args) extends Job(args) {
    */
   firstLevelEntities
     .joinWithSmaller(('object -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
-    .mapTo(('subject, 'object, 'subject2, 'object2) -> ('predicatetype, 'subject,'object)) {
+    .mapTo(('subject, 'object, 'subject2, 'object2) ->('predicatetype, 'subject, 'object)) {
     fields: (Subject, Range, Subject, Range) =>
       if (fields._4 == null) (2, fields._1, stripURI(fields._2).mkString("\"", "", "\"")) else (2, fields._1, fields._4)
   }

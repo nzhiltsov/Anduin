@@ -11,13 +11,14 @@ import ru.ksu.niimm.cll.anduin.util.NodeParser._
  * @author Nikita Zhiltsov 
  */
 @RunWith(classOf[JUnitSuiteRunner])
-class AdjacencyListProcessorTest extends JUnit4(AdjacencyListProcessorTestSpec)
+class NquadAdjacencyListProcessorTest extends JUnit4(N3AdjacencyListProcessorTestSpec)
 
-object AdjacencyListProcessorTestSpec extends Specification with TupleConversions {
+object NquadAdjacencyListProcessorTestSpec extends Specification with TupleConversions {
   "Adjacency list processor job" should {
     JobTest("ru.ksu.niimm.cll.anduin.adjacency.AdjacencyListProcessor").
       arg("input", "inputFile").
       arg("inputPredicateList", "inputPredicateListFile").
+      arg("inputFormat", "nquad").
       arg("output", "outputFile")
       .source(TypedTsv[(String, String)]("inputPredicateListFile"), List(
       ("<http://www.aktors.org/ontology/portal#has-author>", "0"),
