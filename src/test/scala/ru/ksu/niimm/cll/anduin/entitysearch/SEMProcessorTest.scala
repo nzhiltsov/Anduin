@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin.sem
+package ru.ksu.niimm.cll.anduin.entitysearch
 
 import org.junit.runner.RunWith
 import org.specs.Specification
@@ -15,7 +15,7 @@ class SEMProcessorTest extends JUnit4(SEMProcessorTestSpec)
 
 object SEMProcessorTestSpec extends Specification with TupleConversions {
   "The SEM processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.sem.SEMProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.entitysearch.SEMProcessor").
       arg("inputNameLike", "inputNameLikeFile").
       arg("inputOutgoingLinks", "inputOutgoingLinksFile").
       arg("inputIncomingLinks", "inputIncomingLinksFile").

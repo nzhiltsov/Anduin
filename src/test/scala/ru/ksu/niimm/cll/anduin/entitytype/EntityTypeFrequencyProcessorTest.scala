@@ -21,20 +21,20 @@ object TopClassFinderProcessorTestSpec extends Specification with TupleConversio
       List(
         // 1st row
         ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
-          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype> <http://www.aktors.org/ontology/portal#Article-Reference> " +
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.aktors.org/ontology/portal#Article-Reference> " +
           "<http://somecontext.com/1> ."),
         // 2nd row
         ("1", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype> <http://xmlns.com/foaf/0.1/Person> <http://somecontext.com/1> ."),
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://somecontext.com/1> ."),
         // 3rd row
         ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype> \"No. 1 RNA researcher\" <http://somecontext.com/1> ."),
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> \"No. 1 RNA researcher\" <http://somecontext.com/1> ."),
         // 4th row
         ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype> <http://xmlns.com/foaf/0.1/Person> <http://somecontext.com/2> ."),
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://somecontext.com/2> ."),
         // 5th row
         ("4", "<http://eprints.rkbexplorer.com/id/caltech/person-133> " +
-          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype> <http://xmlns.com/foaf/0.1/Person> <http://somecontext.com/2> .")
+          "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://somecontext.com/2> .")
       ))
       .sink[(String, Int)](new FixedPathLzoTsv("outputFile")) {
       outputBuffer =>

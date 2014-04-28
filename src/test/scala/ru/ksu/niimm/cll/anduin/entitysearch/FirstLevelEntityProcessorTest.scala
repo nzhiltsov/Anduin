@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin.sem
+package ru.ksu.niimm.cll.anduin.entitysearch
 
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
@@ -15,7 +15,7 @@ class FirstLevelEntityProcessorTest extends JUnit4(FirstLevelEntityProcessorTest
 
 object FirstLevelEntityProcessorTestSpec extends Specification with TupleConversions {
   "The first level entity processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.sem.FirstLevelEntityProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.entitysearch.FirstLevelEntityProcessor").
       arg("input", "inputFile").
       arg("output", "outputFile").
       source(new TextLine("inputFile"), List(

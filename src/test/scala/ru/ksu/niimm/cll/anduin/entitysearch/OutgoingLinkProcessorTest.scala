@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin.sem
+package ru.ksu.niimm.cll.anduin.entitysearch
 
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
@@ -15,7 +15,7 @@ class OutgoingLinkProcessorTest extends JUnit4(OutgoingLinkProcessorTestSpec)
 
 object OutgoingLinkProcessorTestSpec extends Specification with TupleConversions {
   "The outgoing link processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.sem.OutgoingLinkProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.entitysearch.OutgoingLinkProcessor").
       arg("inputFirstLevel", "inputFirstLevelFile").
       arg("inputSecondLevel", "inputSecondLevelFile").
       arg("output", "outputFile").

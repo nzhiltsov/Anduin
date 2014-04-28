@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin.sem
+package ru.ksu.niimm.cll.anduin.entitysearch
 
 import org.specs.Specification
 import com.twitter.scalding.{Tsv, TypedTsv, JobTest, TupleConversions}
@@ -12,7 +12,7 @@ class IncomingLinkProcessorTest extends JUnit4(IncomingLinkProcessorTestSpec)
 
 object IncomingLinkProcessorTestSpec extends Specification with TupleConversions {
   "The incoming link processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.sem.IncomingLinkProcessor").
+    JobTest("ru.ksu.niimm.cll.anduin.entitysearch.IncomingLinkProcessor").
       arg("inputFirstLevel", "inputFirstLevelFile").
       arg("inputSecondLevel", "inputSecondLevelFile").
       arg("output", "outputFile")

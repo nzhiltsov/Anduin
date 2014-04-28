@@ -11,7 +11,7 @@ import com.twitter.scalding.TextLine
  * @author Nikita Zhiltsov 
  */
 class EntityTypeFrequencyProcessor(args: Args) extends Job(args) {
-  val RDF_TYPE_PREDICATE = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype>"
+  val RDF_TYPE_PREDICATE = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
   /**
    * reads the triples
    */
