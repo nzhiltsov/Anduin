@@ -1,4 +1,4 @@
-package ru.ksu.niimm.cll.anduin.sem
+package ru.ksu.niimm.cll.anduin.entitysearch
 
 import com.twitter.scalding.{Tsv, Job, Args, TextLine}
 import ru.ksu.niimm.cll.anduin.util.NodeParser._

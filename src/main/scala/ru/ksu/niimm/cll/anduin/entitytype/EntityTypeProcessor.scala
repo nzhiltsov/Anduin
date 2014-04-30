@@ -11,7 +11,7 @@ import com.twitter.scalding.TextLine
  * @author Nikita Zhiltsov 
  */
 class EntityTypeProcessor(args: Args) extends Job(args) {
-  val RDF_TYPE_PREDICATE = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#entitytype>"
+  val RDF_TYPE_PREDICATE = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
   private val wordEntityPairs = TypedTsv[(String, String)](args("inputTermEntityPairs")).read.rename((0, 1) ->('word, 'entityUri))
   /**
    * reads the predicates of interest
