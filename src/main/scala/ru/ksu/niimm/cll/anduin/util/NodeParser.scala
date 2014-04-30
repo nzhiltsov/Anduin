@@ -16,6 +16,9 @@ object NodeParser {
   // "Object", in other words
   type Range = String
 
+  def extractTripleFromQuad(line: String): (Subject, Predicate, Range) = extractNodes(line) match {
+    case (context, s, p, o) => (s, p, o)
+  }
 
   def extractNodes(line: String): (Context, Subject, Predicate, Range) = {
 
