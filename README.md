@@ -7,7 +7,7 @@ Anduin is a lightweight and concise tool to process RDF/N-Quads as well as RDF/N
 
 Current Version
 ------------
-[0.3](https://github.com/nzhiltsov/Anduin/archive/0.3.zip)
+[0.3.1](https://github.com/nzhiltsov/Anduin/archive/0.3.1.zip)
 
 Features
 ------------
