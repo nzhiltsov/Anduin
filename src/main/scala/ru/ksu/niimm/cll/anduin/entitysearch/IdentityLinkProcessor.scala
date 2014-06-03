@@ -14,6 +14,10 @@ import ru.ksu.niimm.cll.anduin.util.NodeParser._
  * @author Nikita Zhiltsov 
  */
 class IdentityLinkProcessor(args: Args) extends Job(args) {
+  private val inputFormat = args("inputFormat")
+
+  def isNquad = inputFormat.equals("nquad")
+
   private val entityAttributes =
     TypedTsv[(Int, Subject, Range)](args("inputEntityAttributes")).read
       .rename((0, 1, 2) ->('predicatetype, 'attrsubject, 'content))
@@ -29,7 +33,10 @@ class IdentityLinkProcessor(args: Args) extends Job(args) {
         val cleanLine = line.trim
         cleanLine.startsWith("<") && cleanLine.length < MAX_LINE_LENGTH
     }
-      .mapTo('line ->('subject, 'predicate, 'object))(extractTripleFromQuad)
+      .mapTo('line ->('subject, 'predicate, 'object)) {
+      line: String =>
+        if (isNquad) extractTripleFromQuad(line) else extractNodesFromN3(line)
+    }
       .filter(('subject, 'object))(retainOnlyObjectLinks)
 
   private val sameAsLinks = firstLevelEntities.filter('predicate)(retainOnlySameAsLinks).project(('subject, 'object))

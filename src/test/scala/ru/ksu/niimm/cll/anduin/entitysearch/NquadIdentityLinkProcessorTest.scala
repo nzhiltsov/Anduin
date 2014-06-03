@@ -9,13 +9,14 @@ import com.twitter.scalding.Tsv
 /**
  * @author Nikita Zhiltsov 
  */
-class IdentityLinkProcessorTest extends JUnit4(IdentityLinkProcessorTestSpec)
+class NquadIdentityLinkProcessorTest extends JUnit4(NquadIdentityLinkProcessorTestSpec)
 
-object IdentityLinkProcessorTestSpec extends Specification with TupleConversions {
+object NquadIdentityLinkProcessorTestSpec extends Specification with TupleConversions {
   "The identity link processor job" should {
     JobTest("ru.ksu.niimm.cll.anduin.entitysearch.IdentityLinkProcessor").
       arg("inputEntityAttributes", "inputEntityAttributesFile").
       arg("inputGraph", "inputGraphFile").
+      arg("inputFormat", "nquad").
       arg("output", "outputFile")
       .source(TypedTsv[(Int, Subject, Range)]("inputEntityAttributesFile"), List(
       (0, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"Primary person 1 name\""),
