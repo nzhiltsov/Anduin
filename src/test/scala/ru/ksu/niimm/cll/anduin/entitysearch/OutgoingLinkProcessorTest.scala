@@ -6,6 +6,7 @@ import org.specs.Specification
 import com.twitter.scalding._
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import com.twitter.scalding.Tsv
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
  * @author Nikita Zhiltsov 
@@ -19,12 +20,12 @@ object OutgoingLinkProcessorTestSpec extends Specification with TupleConversions
       arg("inputFirstLevel", "inputFirstLevelFile").
       arg("inputSecondLevel", "inputSecondLevelFile").
       arg("output", "outputFile").
-      source(TypedTsv[(String, Subject, Range)]("inputSecondLevelFile"), List(
+      source(TypedTsv[(String, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)]("inputSecondLevelFile"), List(
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"No. 1 RNA researcher 1\""),
       ("1", "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"<body><p>123</p></body>\""),
       ("0", "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>", "\"Relevant name\""),
       ("0", "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>", "\"Other relevant name\"")))
-      .source(TextLine("inputFirstLevelFile"), List(
+      .source(new FixedPathLzoTextLine("inputFirstLevelFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> ."),
@@ -37,7 +38,7 @@ object OutgoingLinkProcessorTestSpec extends Specification with TupleConversions
       // 5th row
       ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-2> <http://www.aktors.org/ontology/portal#label> \"Person 2\" .")
     )).
-      sink[(Int, Subject, Range)](Tsv("outputFile")) {
+      sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct entity descriptions" in {
           outputBuffer.size must_== 4

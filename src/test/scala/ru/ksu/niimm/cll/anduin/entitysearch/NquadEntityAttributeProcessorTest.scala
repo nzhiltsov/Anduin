@@ -5,6 +5,7 @@ import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding._
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
  * @author Nikita Zhiltsov 
@@ -18,7 +19,7 @@ object NquadNameLikeAttributeProcessorTestSpec extends Specification with TupleC
       arg("input", "inputFile").
       arg("output", "outputFile").
       arg("inputFormat", "nquad").
-      source(TextLine("inputFile"), List(
+      source(new FixedPathLzoTextLine("inputFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> <http://context.com/1> ."),
@@ -38,7 +39,7 @@ object NquadNameLikeAttributeProcessorTestSpec extends Specification with TupleC
       ("5", "<http://eprints.rkbexplorer.com/id/caltech/person-2> " +
         "<http://www.aktors.org/ontology/portal#value> \"<body><p>123</p></body>\" <http://context.com/1> .")
     )).
-      sink[(Int, Subject, Range)](Tsv("outputFile")) {
+      sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct entity descriptions" in {
           outputBuffer.size must_== 2

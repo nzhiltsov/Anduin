@@ -4,6 +4,7 @@ import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding._
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
  * @author Nikita Zhiltsov 
@@ -25,7 +26,7 @@ object NquadSubGraphProcessorTestSpec extends Specification with TupleConversion
       ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-1>"),
       ("4", "<http://eprints.rkbexplorer.com/id/caltech/person-2>")
     ))
-      .source(new TextLine("inputFile"), List(
+      .source(new FixedPathLzoTextLine("inputFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> " +

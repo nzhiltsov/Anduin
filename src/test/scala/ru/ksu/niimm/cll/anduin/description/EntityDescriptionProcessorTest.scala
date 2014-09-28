@@ -42,7 +42,7 @@ object EntityDescriptionProcessorTestSpec extends Specification with TupleConver
          "<http://www.aktors.org/ontology/portal#other> <http://eprints.rkbexplorer.com/id/caltech/eprints-7519> <http://somecontext.com/1> .")
 
      )).
-       sink[(Subject, Predicate, Range)](Tsv("outputFile")) {
+       sink[(Subject, Predicate, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
        outputBuffer =>
          "output the correct adjacency list" in {
            outputBuffer.size must_== 3

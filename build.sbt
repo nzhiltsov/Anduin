@@ -6,7 +6,7 @@ version := "0.3.1"
 
 organization := "ru.ksu.niimm.cll"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.3"
 
 resolvers += "Concurrent Maven Repo" at "http://conjars.org/repo"
 
@@ -18,13 +18,13 @@ resolvers ++= Seq(
    "Clojars Repository" at "http://clojars.org/repo"
 )
 
-libraryDependencies += "com.twitter" % "scalding_2.9.2" % "0.8.1" withSources()
+libraryDependencies += "com.twitter" % "scalding_2.10" % "0.12.0rc4"
 
-libraryDependencies += "com.twitter" % "scalding-commons_2.9.2" % "0.0.7"
+libraryDependencies += "com.twitter" % "scalding-commons_2.10" % "0.12.0rc4"
 
-libraryDependencies += "org.scala-tools.testing" % "specs_2.9.2" % "1.6.9" % "test"
+libraryDependencies += "org.scala-tools.testing" % "specs_2.10" % "1.6.9" % "test"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "1.8" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.0" % "test"
 
 libraryDependencies += "junit" % "junit" % "4.8" % "test"
 
