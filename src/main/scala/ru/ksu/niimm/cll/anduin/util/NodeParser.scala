@@ -72,7 +72,7 @@ object NodeParser {
     (subject, predicate, range.replace('\t', ' '))
   }
 
-  private val nameLikeAttributes = Array("label", "name", "title", "nick")
+  private val nameLikeAttributes = Array("label", "name", "title")
 
   /**
    * check if the predicate is 'name'-like, e.g. 'name', 'label', 'title' etc.
@@ -86,7 +86,7 @@ object NodeParser {
     val relativePart = if (elements.length < 2) pureURI
     else elements(elements.length - 1)
 
-    nameLikeAttributes.exists(s => relativePart.contains(s))
+    nameLikeAttributes.exists(s => relativePart.endsWith(s))
   }
 
   def cleanHTMLMarkup: String => String = str => StringEscapeUtils.unescapeHtml(Jsoup.clean(str, Whitelist.none()))

@@ -92,16 +92,15 @@ object NodeParserTest extends Specification {
         "http://dbpedia.org/property/name",
         "http://xmlns.com/foaf/0.1/accountName",
         "http://dbpedia.org/ontology/formerName",
-        "http://dbpedia.org/property/formerNames",
         "http://dbpedia.org/property/title",
         "http://dbpedia.org/property/englishTitle",
-        "http://xmlns.com/foaf/0.1/nick",
         "http://purl.org/dc/elements/1.1/title")
       positivePredicates.forall(isNamePredicate) must_== true
       val negativePredicates = List("http://www.w3.org/2000/01/rdf-schema#comment",
         "http://dbpedia.org/property/caption",
         "http://dbpedia.org/ontology/abstract")
       negativePredicates.exists(isNamePredicate) must_== false
+      isNamePredicate("http://example.com/namegroup") must_== false
     }
 
   }

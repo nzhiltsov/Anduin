@@ -37,7 +37,7 @@ class EntityAttributeProcessor(args: Args) extends Job(args) {
   }.unique(('subject, 'predicate, 'object)).groupBy(('subject, 'predicate)) {
     _.mkString('object, " ")
   }.map('predicate -> 'predicatetype) {
-    predicate: Predicate => if (isNamePredicate(predicate)) 0 else 1
+    predicate: Predicate => if (isNamePredicate(predicate.substring(1, predicate.length - 1))) 0 else 1
   }
     .project(('predicatetype, 'subject, 'object))
 
