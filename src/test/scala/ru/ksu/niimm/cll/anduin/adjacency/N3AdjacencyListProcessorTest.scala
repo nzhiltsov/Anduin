@@ -6,6 +6,7 @@ import org.specs.Specification
 import com.twitter.scalding._
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import com.twitter.scalding.TextLine
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
  * @author Nikita Zhiltsov 
@@ -25,7 +26,7 @@ object N3AdjacencyListProcessorTestSpec extends Specification with TupleConversi
       ("<http://www.aktors.org/ontology/portal#label>", "2"),
       ("<http://www.aktors.org/ontology/portal#knows>", "1")
     ))
-      .source(TextLine("inputFile"), List(
+      .source(new FixedPathLzoTextLine("inputFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> ."),
@@ -43,7 +44,7 @@ object N3AdjacencyListProcessorTestSpec extends Specification with TupleConversi
         "<http://www.aktors.org/ontology/portal#other> <http://eprints.rkbexplorer.com/id/caltech/eprints-7519> .")
 
     )).
-      sink[(Int, Subject, Range)](Tsv("outputFile")) {
+      sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct adjacency list" in {
           outputBuffer.size must_== 2

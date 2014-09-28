@@ -3,7 +3,8 @@ package ru.ksu.niimm.cll.anduin.degree
 import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
-import com.twitter.scalding.{Tsv, TypedTsv, JobTest, TupleConversions}
+import com.twitter.scalding.{Tsv, TypedTsv, JobTest}
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTsv
 
 /**
  * @author Nikita Zhiltsov 
@@ -11,7 +12,7 @@ import com.twitter.scalding.{Tsv, TypedTsv, JobTest, TupleConversions}
 @RunWith(classOf[JUnitSuiteRunner])
 class NodeDegreeProcessorTest extends JUnit4(NodeDegreeProcessorTest)
 
-object NodeDegreeProcessorTest extends Specification with TupleConversions {
+object NodeDegreeProcessorTest extends Specification {
   val adjacencyList = List(
     // 1st row
     ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>", "<http://eprints.rkbexplorer.com/id/caltech/person-1>"),
@@ -30,7 +31,7 @@ object NodeDegreeProcessorTest extends Specification with TupleConversions {
       arg("input", "inputFile").
       arg("output", "outputFile").
       source(TypedTsv[(String, String, String)]("inputFile"), adjacencyList)
-      .sink[(String, Int)](Tsv("outputFile")) {
+      .sink[(String, Int)](new FixedPathLzoTsv("outputFile")) {
       outputBuffer =>
         "output the correct stats" in {
           outputBuffer.size must_== 5

@@ -5,6 +5,7 @@ import org.specs.Specification
 import com.twitter.scalding._
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import com.twitter.scalding.TextLine
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
  * @author Nikita Zhiltsov 
@@ -18,7 +19,7 @@ object N3IdentityLinkProcessorTestSpec extends Specification with TupleConversio
       arg("inputGraph", "inputGraphFile").
       arg("inputFormat", "n3").
       arg("output", "outputFile")
-      .source(TypedTsv[(Int, Subject, Range)]("inputEntityAttributesFile"), List(
+      .source(TypedTsv[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)]("inputEntityAttributesFile"), List(
       (0, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"Primary person 1 name\""),
       (1, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"Other attributes of person 1\""),
       (0, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"Primary person 2 name\""),
@@ -27,7 +28,7 @@ object N3IdentityLinkProcessorTestSpec extends Specification with TupleConversio
       (1, "<http://eprints.rkbexplorer.com/id/caltech/person-5>", "\"Other attributes of person 5\""),
       (1, "<http://eprints.rkbexplorer.com/id/caltech/person-6>", "\"Other attributes of person 6\"")
     ))
-      .source(new TextLine("inputGraphFile"), List(
+      .source(new FixedPathLzoTextLine("inputGraphFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> <http://www.aktors.org/ontology/portal#has-author>" +
         " <http://eprints.rkbexplorer.com/id/caltech/person-1> ."),
@@ -47,7 +48,7 @@ object N3IdentityLinkProcessorTestSpec extends Specification with TupleConversio
       ("5", "<http://eprints.rkbexplorer.com/id/caltech/person-1> <http://dbpedia.org/property/redirect> " +
         "<http://eprints.rkbexplorer.com/id/caltech/person-6> .")
     )).
-      sink[(Int, Subject, Range)](Tsv("outputFile")) {
+      sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct entity descriptions" in {
           outputBuffer.size must_== 11

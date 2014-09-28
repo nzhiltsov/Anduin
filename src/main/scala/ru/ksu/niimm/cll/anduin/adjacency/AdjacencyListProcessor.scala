@@ -40,7 +40,7 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
         (nodes._2, nodes._3, nodes._4)
       } else extractNodesFromN3(line)
   }.filter(('subject, 'object)) {
-    fields: (Subject, Range) =>
+    fields: (Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range) =>
       fields._1.startsWith("<") && fields._2.startsWith("<")
   }.unique(('subject, 'predicate, 'object))
     .joinWithTiny('predicate -> 'relPredicate, relevantPredicates)

@@ -1,6 +1,6 @@
 package ru.ksu.niimm.cll.anduin
 
-import com.twitter.scalding.{Tsv, TypedTsv, Job, Args}
+import com.twitter.scalding._
 
 /**
  * Given a list of files in the format:
@@ -17,7 +17,7 @@ class JoinFrequencyProcessor(args: Args) extends Job(args) {
   private val wordCounts = TypedTsv[(String, Int)](args("input")).read.rename((0, 1) ->('word, 'count))
 
   wordCounts.groupBy('word) {
-    _.sum('count -> 'count)
+    _.sum[Int]('count -> 'count)
   }
     .groupAll {
     _.sortBy('count).reverse

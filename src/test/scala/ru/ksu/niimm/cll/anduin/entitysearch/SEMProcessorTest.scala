@@ -20,22 +20,22 @@ object SEMProcessorTestSpec extends Specification with TupleConversions {
       arg("inputOutgoingLinks", "inputOutgoingLinksFile").
       arg("inputIncomingLinks", "inputIncomingLinksFile").
       arg("output", "outputFile")
-      .source(TypedTsv[(Int, Subject, Range)]("inputNameLikeFile"), List(
+      .source(TypedTsv[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)]("inputNameLikeFile"), List(
       (0, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"No. 1 RNA researcher 1\""),
       (1, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"123\"")
     ))
-      .source(TypedTsv[(Int, Subject, Range)]("inputOutgoingLinksFile"), List(
+      .source(TypedTsv[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)]("inputOutgoingLinksFile"), List(
       (2, "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>", "\"No. 1 RNA researcher 1\""),
       (2, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "person"),
       (2, "<http://eprints.rkbexplorer.com/id/caltech/person-3>", "Caldwell High School Caldwell Texas"),
       (2, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"Relevant name\"")
     ))
-      .source(TypedTsv[(Int, Subject, Range)]("inputIncomingLinksFile"), List(
+      .source(TypedTsv[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)]("inputIncomingLinksFile"), List(
       (3, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"No. 1 RNA researcher 1\""),
       (3, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "eprints"),
       (3, "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>", "person")
     ))
-      .sink[(Int, Subject, Range)](new FixedPathLzoTsv("outputFile")) {
+      .sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](new FixedPathLzoTsv("outputFile")) {
       outputBuffer =>
         "output the correct entity descriptions" in {
           outputBuffer.size must_== 9

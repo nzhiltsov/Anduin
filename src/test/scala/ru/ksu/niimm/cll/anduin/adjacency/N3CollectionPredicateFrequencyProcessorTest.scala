@@ -4,6 +4,7 @@ import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding.{Tsv, TextLine, JobTest, TupleConversions}
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
  * @author Nikita Zhiltsov 
@@ -17,7 +18,7 @@ object N3TopPredicateFinderProcessorTestSpec extends Specification with TupleCon
       arg("input", "inputFile").
       arg("output", "outputFile").
       arg("inputFormat", "n3").
-      source(TextLine("inputFile"),
+      source(new FixedPathLzoTextLine("inputFile"),
         List(
           // 1st row
           ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +

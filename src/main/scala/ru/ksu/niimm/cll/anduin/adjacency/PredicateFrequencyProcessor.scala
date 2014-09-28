@@ -23,7 +23,7 @@ class PredicateFrequencyProcessor(args: Args) extends Job(args) {
       val nodes = extractNodes(line)
       (nodes._2, nodes._3, nodes._4)
   }.filter(('subject, 'object)) {
-    fields: (Subject, Range) =>
+    fields: (Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range) =>
       (firstEntities.contains(fields._1) && secondEntities.contains(fields._2)) ||
         (firstEntities.contains(fields._2) && secondEntities.contains(fields._1))
   }
