@@ -12,15 +12,15 @@ resolvers += "Concurrent Maven Repo" at "http://conjars.org/repo"
 
 resolvers ++= Seq(
   "snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
-  "releases"  at "http://oss.sonatype.org/content/repositories/releases",
+  "releases" at "http://oss.sonatype.org/content/repositories/releases",
   "Twitter Maven" at "http://maven.twttr.com",
-   "Twitter SVN Maven" at "https://svn.twitter.biz/maven-public",
-   "Clojars Repository" at "http://clojars.org/repo"
+  "Twitter SVN Maven" at "https://svn.twitter.biz/maven-public",
+  "Clojars Repository" at "http://clojars.org/repo"
 )
 
-libraryDependencies += "com.twitter" % "scalding_2.10" % "0.12.0rc4"
+libraryDependencies += "com.twitter" % "scalding_2.10" % "0.11.0"
 
-libraryDependencies += "com.twitter" % "scalding-commons_2.10" % "0.12.0rc4"
+libraryDependencies += "com.twitter" % "scalding-commons_2.10" % "0.11.0"
 
 libraryDependencies += "org.scala-tools.testing" % "specs_2.10" % "1.6.9" % "test"
 
@@ -42,24 +42,22 @@ parallelExecution in Test := false
 
 seq(assemblySettings: _*)
 
-mainClass in (Compile, run) := Some("com.twitter.scalding.Tool")
+mainClass in(Compile, run) := Some("com.twitter.scalding.Tool")
 
-// Uncomment if you don't want to run all the tests before building assembly
-// test in assembly := {}
-
-// Janino includes a broken signature, and is not needed:
-excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
-  val excludes = Set("jsp-api-2.1-6.1.14.jar", "jsp-2.1-6.1.14.jar",
-    "jasper-compiler-5.5.12.jar", "janino-2.5.16.jar")
-  cp filter { jar => excludes(jar.data.getName)}
+excludedJars in assembly <<= (fullClasspath in assembly) map {
+  cp => cp filter {
+    Set("janino-2.5.16.jar", "hadoop-core-0.20.2.jar", "jsp-api-2.1-6.1.14.jar", "jsp-2.1-6.1.14.jar",
+      "jasper-compiler-5.5.12.jar") contains _.data.getName
+  }
 }
 
-// Some of these files have duplicates, let's ignore:
-mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
-  {
+mergeStrategy in assembly <<= (mergeStrategy in assembly) {
+  (old) => {
     case s if s.endsWith(".class") => MergeStrategy.last
     case s if s.endsWith("project.clj") => MergeStrategy.concat
     case s if s.endsWith(".html") => MergeStrategy.last
     case x => old(x)
   }
 }
+
+net.virtualvoid.sbt.graph.Plugin.graphSettings
