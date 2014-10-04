@@ -26,7 +26,7 @@ object NquadAdjacencyListProcessorTestSpec extends Specification with TupleConve
       ("<http://www.aktors.org/ontology/portal#label>", "2"),
       ("<http://www.aktors.org/ontology/portal#knows>", "1")
     ))
-      .source(new FixedPathLzoTextLine("inputFile"), List(
+      .source(TextLine("inputFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> " +
