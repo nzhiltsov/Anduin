@@ -13,10 +13,10 @@ class TensorHelperProcessor(args: Args) extends Job(args) {
   private val adjacencyList = TypedTsv[(String, String, String)](args("input")).read.rename((0, 1, 2) ->('predicateId, 'subject, 'object))
 
   private val entities =
-    TypedTsv[(String, String)](args("inputEntityList")).read.rename((0, 1) ->('entityURI, 'entityId))
+    TypedTsv[(String, String)](args("inputEntityList")).read.rename((0, 1) ->('entityId, 'entityURI))
 
   private val entities2 =
-    TypedTsv[(String, String)](args("inputEntityList")).read.rename((0, 1) ->('entityURI, 'entityId))
+    TypedTsv[(String, String)](args("inputEntityList")).read.rename((0, 1) ->('entityId, 'entityURI))
 
   val tensorEntries = adjacencyList.joinWithSmaller('subject -> 'entityURI, entities)
     .project(('predicateId, 'entityId, 'object)).rename('entityId -> 'subjectId)

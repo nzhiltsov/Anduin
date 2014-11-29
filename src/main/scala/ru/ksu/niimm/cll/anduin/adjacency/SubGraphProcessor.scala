@@ -20,7 +20,7 @@ class SubGraphProcessor(args: Args) extends Job(args) {
   /**
    * reads the entity subgraph
    */
-  private val subgraph = new FixedPathLzoTextLine(args("input")).read.filter('line) {
+  private val subgraph = TextLine(args("input")).read.filter('line) {
     line: String =>
       val cleanLine = line.trim
       cleanLine.startsWith("<")

@@ -13,7 +13,7 @@ class AdjacencyListFilterProcessor(args: Args) extends Job(args) {
   private val relevantEntities = TextLine(args("inputEntities")).read.rename('line -> 'entityURI)
 
   private val relevantPredicates =
-    TypedTsv[(String, String)](args("inputPredicates")).read.rename((0, 1) ->('relPredicate, 'relPredicateId))
+    TypedTsv[(String, String)](args("inputPredicates")).read.rename((0, 1) ->('relPredicateId, 'relPredicate))
 
   private val edges = TypedTsv[(String, String, String)](args("input"))
     .read.rename((0, 1, 2) ->('predicateId, 'subject, 'object))

@@ -23,5 +23,5 @@ class NodeDegreeProcessor(args: Args) extends Job(args) {
     _.size
   }.map('size -> 'size) {
     size: String => Integer.parseInt(size)
-  }.write(new FixedPathLzoTsv(args("output")))
+  }.write(Tsv(args("output")))
 }

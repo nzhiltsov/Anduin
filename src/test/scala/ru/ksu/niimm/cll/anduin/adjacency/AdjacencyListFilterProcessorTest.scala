@@ -28,7 +28,7 @@ object AdjacencyListFilterProcessorTestSpec extends Specification with TupleConv
       ("2", "http://example.com/3")
     ))
       .source(TypedTsv[(String, String)]("inputPredicateFile"), List(
-      ("http://example.com/predicate/1", "0")
+      ("0", "http://example.com/predicate/1")
     ))
       .source(TypedTsv[(String, String, String)]("inputFile"), List(
       ("0", "http://example.com/1", "http://example.com/10"),

@@ -22,9 +22,9 @@ object NquadAdjacencyListProcessorTestSpec extends Specification with TupleConve
       arg("inputFormat", "nquad").
       arg("output", "outputFile")
       .source(TypedTsv[(String, String)]("inputPredicateListFile"), List(
-      ("<http://www.aktors.org/ontology/portal#has-author>", "0"),
-      ("<http://www.aktors.org/ontology/portal#label>", "2"),
-      ("<http://www.aktors.org/ontology/portal#knows>", "1")
+      ("0", "<http://www.aktors.org/ontology/portal#has-author>"),
+      ("2", "<http://www.aktors.org/ontology/portal#label>"),
+      ("1", "<http://www.aktors.org/ontology/portal#knows>")
     ))
       .source(TextLine("inputFile"), List(
       // 1st row
