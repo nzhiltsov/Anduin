@@ -19,14 +19,14 @@ object N3SubGraphProcessorTestSpec extends Specification with TupleConversions {
       arg("inputEntities", "inputEntitiesFile").
       arg("inputFormat", "n3").
       arg("output", "outputFile").
-      source(new TextLine("inputEntitiesFile"), List(
+      source(TextLine("inputEntitiesFile"), List(
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"),
       ("1", "<http://example.com/2>"),
       ("2", "<http://example.com/3>"),
       ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-1>"),
       ("4", "<http://eprints.rkbexplorer.com/id/caltech/person-2>")
     ))
-      .source(new FixedPathLzoTextLine("inputFile"), List(
+      .source(TextLine("inputFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> ."),

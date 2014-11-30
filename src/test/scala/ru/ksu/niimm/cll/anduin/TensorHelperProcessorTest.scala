@@ -14,10 +14,10 @@ class TensorHelperProcessorTest extends JUnit4(TensorHelperProcessorTestSpec)
 
 object TensorHelperProcessorTestSpec extends Specification with TupleConversions {
   val entityList: List[(String, String)] = List(
-    ("<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>", "0"),
-    ("<http://eprints.rkbexplorer.com/id/caltech/person-1>", "1"),
-    ("<http://eprints.rkbexplorer.com/id/caltech/person-2>", "2"),
-    ("<http://eprints.rkbexplorer.com/id/caltech/person-3>", "3")
+    ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>"),
+    ("1", "<http://eprints.rkbexplorer.com/id/caltech/person-1>"),
+    ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-2>"),
+    ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-3>")
   )
   val adjacencyList = List(
     // 1st row

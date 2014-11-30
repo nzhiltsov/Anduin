@@ -17,7 +17,7 @@ class CollectionPredicateFrequencyProcessor(args: Args) extends Job(args) {
   /**
    * reads the triples
    */
-  private val triples = new FixedPathLzoTextLine(args("input")).read.filter('line){
+  private val triples = TextLine(args("input")).read.filter('line){
     line: String =>
       val cleanLine = line.trim
       cleanLine.startsWith("<") || cleanLine.startsWith("_")

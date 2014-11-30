@@ -25,11 +25,11 @@ class AdjacencyListProcessor(args: Args) extends Job(args) {
    * reads the predicates of interest
    */
   private val relevantPredicates =
-    TypedTsv[(String, String)](args("inputPredicateList")).read.rename((0, 1) ->('relPredicate, 'relPredicateId))
+    TypedTsv[(String, String)](args("inputPredicateList")).read.rename((0, 1) ->('relPredicateId, 'relPredicate))
   /**
    * reads the entity triples
    */
-  private val triples = new FixedPathLzoTextLine(args("input")).read.filter('line) {
+  private val triples = TextLine(args("input")).read.filter('line) {
     line: String =>
       val cleanLine = line.trim
       cleanLine.startsWith("<")

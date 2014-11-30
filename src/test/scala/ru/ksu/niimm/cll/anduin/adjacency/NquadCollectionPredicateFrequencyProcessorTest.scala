@@ -18,7 +18,7 @@ object NquadTopPredicateFinderProcessorTestSpec extends Specification with Tuple
       arg("input", "inputFile").
       arg("output", "outputFile").
       arg("inputFormat", "nquad").
-      source(new FixedPathLzoTextLine("inputFile"),
+      source(TextLine("inputFile"),
       List(
         // 1st row
         ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +

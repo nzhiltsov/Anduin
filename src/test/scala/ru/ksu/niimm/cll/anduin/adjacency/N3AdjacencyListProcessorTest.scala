@@ -22,11 +22,11 @@ object N3AdjacencyListProcessorTestSpec extends Specification with TupleConversi
       arg("inputFormat", "n3").
       arg("output", "outputFile")
       .source(TypedTsv[(String, String)]("inputPredicateListFile"), List(
-      ("<http://www.aktors.org/ontology/portal#has-author>", "0"),
-      ("<http://www.aktors.org/ontology/portal#label>", "2"),
-      ("<http://www.aktors.org/ontology/portal#knows>", "1")
+      ("0", "<http://www.aktors.org/ontology/portal#has-author>"),
+      ("2", "<http://www.aktors.org/ontology/portal#label>"),
+      ("1", "<http://www.aktors.org/ontology/portal#knows>")
     ))
-      .source(new FixedPathLzoTextLine("inputFile"), List(
+      .source(TextLine("inputFile"), List(
       // 1st row
       ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
         "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> ."),

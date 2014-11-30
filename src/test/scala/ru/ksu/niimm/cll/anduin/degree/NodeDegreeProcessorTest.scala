@@ -31,7 +31,7 @@ object NodeDegreeProcessorTest extends Specification {
       arg("input", "inputFile").
       arg("output", "outputFile").
       source(TypedTsv[(String, String, String)]("inputFile"), adjacencyList)
-      .sink[(String, Int)](new FixedPathLzoTsv("outputFile")) {
+      .sink[(String, Int)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct stats" in {
           outputBuffer.size must_== 5

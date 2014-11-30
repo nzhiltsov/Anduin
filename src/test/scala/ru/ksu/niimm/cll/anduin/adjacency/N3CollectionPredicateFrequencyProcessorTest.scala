@@ -18,7 +18,7 @@ object N3TopPredicateFinderProcessorTestSpec extends Specification with TupleCon
       arg("input", "inputFile").
       arg("output", "outputFile").
       arg("inputFormat", "n3").
-      source(new FixedPathLzoTextLine("inputFile"),
+      source(TextLine("inputFile"),
         List(
           // 1st row
           ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
