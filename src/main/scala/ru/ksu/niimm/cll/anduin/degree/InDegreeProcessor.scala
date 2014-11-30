@@ -1,20 +1,12 @@
 package ru.ksu.niimm.cll.anduin.degree
 
-import com.twitter.scalding.{Job, Args}
+import com.twitter.scalding.{Job, Args, TextLine, Tsv}
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
-import com.twitter.scalding.Tsv
-import com.twitter.scalding.TextLine
 
 /**
- * This processor computes out degrees of entities in the RDF graph.
- *  The output is as follows:
- *  <p>
- * <b>entity_uri TAB out degree</b>
- * </p>
- *
  * @author Nikita Zhiltsov 
  */
-class OutDegreeProcessor(args: Args) extends Job(args) {
+class InDegreeProcessor(args: Args) extends Job(args) {
   private val inputFormat = args("inputFormat")
 
   def isNquad = inputFormat.equals("nquad")
@@ -29,10 +21,10 @@ class OutDegreeProcessor(args: Args) extends Job(args) {
       } else extractNodesFromN3(line)
   }
 
-  triples.filter('subject) {
-    subject: Subject => subject.startsWith("<")
+  triples.filter('object) {
+    range: Range => range.startsWith("<")
   }.unique(('subject, 'predicate, 'object))
-    .groupBy(('subject)) {
+    .groupBy(('object)) {
     _.size
   }.map('size -> 'size) {
     size: String => Integer.parseInt(size)
