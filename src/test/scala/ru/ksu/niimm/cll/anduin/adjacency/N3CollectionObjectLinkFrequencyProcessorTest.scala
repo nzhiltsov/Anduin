@@ -4,31 +4,34 @@ import org.junit.runner.RunWith
 import org.specs.runner.{JUnit4, JUnitSuiteRunner}
 import org.specs.Specification
 import com.twitter.scalding.{Tsv, TextLine, JobTest, TupleConversions}
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
- * @author Nikita Zhiltsov
+ * @author Nikita Zhiltsov 
  */
 @RunWith(classOf[JUnitSuiteRunner])
-class NquadCollectionPredicateFrequencyProcessorTest extends JUnit4(NquadCollectionPredicateFrequencyProcessorTestSpec)
+class N3CollectionObjectLinkFrequencyProcessorTest extends JUnit4(N3CollectionObjectLinkFrequencyProcessorTestSpec)
 
-object NquadCollectionPredicateFrequencyProcessorTestSpec  extends Specification with TupleConversions {
-  "The collection predicate frequency processor job" should {
-    JobTest("ru.ksu.niimm.cll.anduin.adjacency.CollectionPredicateFrequencyProcessor").
+object N3CollectionObjectLinkFrequencyProcessorTestSpec extends Specification with TupleConversions {
+  "The top predicate finder processor job" should {
+    JobTest("ru.ksu.niimm.cll.anduin.adjacency.CollectionObjectLinkFrequencyProcessor").
       arg("input", "inputFile").
       arg("output", "outputFile").
-      arg("inputFormat", "nquad").
+      arg("inputFormat", "n3").
       source(TextLine("inputFile"),
         List(
           // 1st row
           ("0", "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
-            "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-            "<http://somecontext.com/1> ."),
+            "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-1> ."),
           // 2nd row
           ("1", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-            "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-2> <http://somecontext.com/1> ."),
+            "<http://www.aktors.org/ontology/portal#has-author> <http://eprints.rkbexplorer.com/id/caltech/person-2> ."),
           // 3rd row
           ("2", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-            "<http://www.aktors.org/ontology/portal#label> \"No. 1 RNA researcher\" <http://somecontext.com/1> .")
+            "<http://www.aktors.org/ontology/portal#label> \"No. 1 RNA researcher\" ."),
+          // 4th row
+          ("3", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
+            "<http://www.aktors.org/ontology/portal#label> <http://eprints.rkbexplorer.com/id/caltech/eprints-7519> .")
         ))
       .sink[(String, Int)](Tsv("outputFile")) {
       outputBuffer =>
@@ -42,4 +45,3 @@ object NquadCollectionPredicateFrequencyProcessorTestSpec  extends Specification
   }
 
 }
-

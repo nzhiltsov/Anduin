@@ -13,7 +13,12 @@ class InDegreeProcessor(args: Args) extends Job(args) {
   /**
    * reads the entity triples
    */
-  private val triples = TextLine(args("input")).read.mapTo('line ->('subject, 'predicate, 'object)) {
+  private val triples = TextLine(args("input")).read.filter('line) {
+    line: String =>
+      val cleanLine = line.trim
+      cleanLine.startsWith("<")
+  }
+    .mapTo('line ->('subject, 'predicate, 'object)) {
     line: String =>
       if (isNquad) {
         val nodes = extractNodes(line)

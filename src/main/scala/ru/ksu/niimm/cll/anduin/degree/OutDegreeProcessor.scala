@@ -7,8 +7,8 @@ import com.twitter.scalding.TextLine
 
 /**
  * This processor computes out degrees of entities in the RDF graph.
- *  The output is as follows:
- *  <p>
+ * The output is as follows:
+ * <p>
  * <b>entity_uri TAB out degree</b>
  * </p>
  *
@@ -18,10 +18,16 @@ class OutDegreeProcessor(args: Args) extends Job(args) {
   private val inputFormat = args("inputFormat")
 
   def isNquad = inputFormat.equals("nquad")
+
   /**
    * reads the entity triples
    */
-  private val triples = TextLine(args("input")).read.mapTo('line ->('subject, 'predicate, 'object)) {
+  private val triples = TextLine(args("input")).read.filter('line) {
+    line: String =>
+      val cleanLine = line.trim
+      cleanLine.startsWith("<")
+  }
+    .mapTo('line ->('subject, 'predicate, 'object)) {
     line: String =>
       if (isNquad) {
         val nodes = extractNodes(line)

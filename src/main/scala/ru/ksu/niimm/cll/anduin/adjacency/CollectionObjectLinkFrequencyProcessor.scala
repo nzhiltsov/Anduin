@@ -1,12 +1,15 @@
 package ru.ksu.niimm.cll.anduin.adjacency
 
-import com.twitter.scalding.{TextLine, Job, Args, Tsv}
+import com.twitter.scalding._
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
+import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
 
 /**
+ * This processor outputs unique predicates (object properties) with their frequencies for the whole collection
+ *
  * @author Nikita Zhiltsov 
  */
-class CollectionPredicateFrequencyProcessor(args: Args) extends Job(args) {
+class CollectionObjectLinkFrequencyProcessor(args: Args) extends Job(args) {
   private val inputFormat = args("inputFormat")
 
   def isNquad = inputFormat.equals("nquad")
@@ -25,6 +28,9 @@ class CollectionPredicateFrequencyProcessor(args: Args) extends Job(args) {
         val nodes = extractNodes(line)
         (nodes._2, nodes._3, nodes._4)
       } else extractNodesFromN3(line)
+  }.filter(('subject, 'object)) {
+    fields: (Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range) =>
+      fields._1.startsWith("<") && fields._2.startsWith("<")
   }.unique(('subject, 'predicate, 'object))
 
   triples.groupBy('predicate) {
@@ -33,4 +39,3 @@ class CollectionPredicateFrequencyProcessor(args: Args) extends Job(args) {
     _.sortBy('count).reverse
   }.project(('predicate, 'count)).write(Tsv(args("output")))
 }
-
