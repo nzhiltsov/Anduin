@@ -35,7 +35,7 @@ object SEMProcessorTestSpec extends Specification with TupleConversions {
       (3, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "eprints"),
       (3, "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>", "person")
     ))
-      .sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](new FixedPathLzoTsv("outputFile")) {
+      .sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct entity descriptions" in {
           outputBuffer.size must_== 9

@@ -1,6 +1,6 @@
 package ru.ksu.niimm.cll.anduin.entitysearch
 
-import com.twitter.scalding.{TypedTsv, Job, Args}
+import com.twitter.scalding.{TypedTsv, Job, Args, Tsv}
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTsv
 
@@ -47,7 +47,7 @@ class SEMProcessor(args: Args) extends Job(args) {
     .groupBy('subject) {
     _.reducers(OUTPUT_FILE_NUMBER).sortBy('subject)
   }
-    .write(new FixedPathLzoTsv(args("output")))
+    .write(Tsv(args("output")))
 
 
 }
