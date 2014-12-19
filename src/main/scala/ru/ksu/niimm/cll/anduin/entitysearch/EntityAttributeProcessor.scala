@@ -32,16 +32,18 @@ class EntityAttributeProcessor(args: Args) extends Job(args) {
   /**
    * filters first level entities with literal values
    */
-  private val firstLevelEntitiesWithLiterals = firstLevelEntitiesWithoutBNodes.filter('object) {
-    range: Range => range.startsWith("\"")
-  }.unique(('subject, 'predicate, 'object)).groupBy(('subject, 'predicate)) {
-    _.mkString('object, " ")
-  }.map('predicate -> 'predicatetype) {
-    predicate: Predicate => if (isNamePredicate(predicate.substring(1, predicate.length - 1))) 0 else 1
+  private val firstLevelEntitiesWithDatatypeProperties = firstLevelEntitiesWithoutBNodes.filter('object) {
+    range: Range => !range.startsWith("<")
+  }.unique(('subject, 'predicate, 'object))
+    .map('predicate -> 'predicatetype) {
+    predicate: Predicate => encodePredicateType(predicate, true)
   }
     .project(('predicatetype, 'subject, 'object))
+    .groupBy(('subject, 'predicatetype)) {
+    _.mkString('object, " ")
+  }
 
-  firstLevelEntitiesWithLiterals
+  firstLevelEntitiesWithDatatypeProperties
     .unique(('predicatetype, 'subject, 'object))
     .map('object -> 'object) {
     range: Range =>
