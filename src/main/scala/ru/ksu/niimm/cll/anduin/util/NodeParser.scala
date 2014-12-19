@@ -3,6 +3,7 @@ package ru.ksu.niimm.cll.anduin.util
 import org.apache.commons.lang.StringEscapeUtils
 import org.jsoup.Jsoup
 import org.jsoup.safety.Whitelist
+import PredicateGroupCodes._
 
 /**
  * This parser extracts quads and triples from raw lines
@@ -53,7 +54,7 @@ object NodeParser {
     val subject = line.substring(0, endSubject)
     val predicate = line.substring(startPredicate, endPredicate)
     val range = line.substring(endPredicate + 1, endingDot)
-    (subject, predicate, range.replace('\t', ' '))
+    (subject, predicate, range.replace('\t', ' ').trim)
   }
 
   def extractNodesFromNTuple(line: String): (Subject, Predicate, Range) = {
@@ -72,21 +73,67 @@ object NodeParser {
     (subject, predicate, range.replace('\t', ' '))
   }
 
-  private val nameLikeAttributes = Array("label", "name", "title")
+  private val nameAttributes = Array("http://dbpedia.org/property/name",
+    "http://xmlns.com/foaf/0.1/name",
+    "http://xmlns.com/foaf/0.1/givenName",
+    "http://xmlns.com/foaf/0.1/surname",
+    "http://dbpedia.org/property/officialName",
+    "http://dbpedia.org/property/fullname",
+    "http://dbpedia.org/property/nativeName",
+    "http://dbpedia.org/property/birthName",
+    "http://dbpedia.org/property/alternativeNames",
+    "http://dbpedia.org/property/nickname",
+    "http://dbpedia.org/ontology/birthName",
+    "http://dbpedia.org/property/showName",
+    "http://dbpedia.org/property/companyName",
+    "http://dbpedia.org/property/shipName",
+    "http://dbpedia.org/ontology/formerName",
+    "http://dbpedia.org/property/clubname",
+    "http://dbpedia.org/property/unitName",
+    "http://dbpedia.org/property/otherName",
+    "http://dbpedia.org/ontology/iupacName",
+    "http://dbpedia.org/property/altNames",
+    "http://dbpedia.org/property/birthname",
+    "http://dbpedia.org/property/names",
+    "http://dbpedia.org/property/lakeName")
+
+  private val labelAttributes = Array("http://www.w3.org/2000/01/rdf-schema#label",
+    "http://www.w3.org/2004/02/skos/core#prefLabel")
+
+  private val titleAttributes = Array("http://dbpedia.org/ontology/title",
+  "http://dbpedia.org/property/shortDescription",
+  "http://purl.org/dc/elements/1.1/description",
+  "http://dbpedia.org/ontology/office")
+
+  private val categoryAttributes = Array("http://purl.org/dc/terms/subject")
+
+  private val typeAttributes = Array("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
 
   /**
-   * check if the predicate is 'name'-like, e.g. 'name', 'label', 'title' etc.
+   * check if the predicate is 'name'-like
    *
    * @param predicate a predicate
    * @return
    */
-  def isNamePredicate(predicate: Predicate): Boolean = {
-    val pureURI = predicate.toLowerCase
-    val elements = if (pureURI.contains('#')) pureURI.split('#') else pureURI.split('/')
-    val relativePart = if (elements.length < 2) pureURI
-    else elements(elements.length - 1)
+  def isNamePredicate(predicate: Predicate): Boolean = nameAttributes.contains(predicate)
 
-    nameLikeAttributes.exists(s => relativePart.endsWith(s))
+  def isLabelPredicate(predicate: Predicate): Boolean = labelAttributes.contains(predicate)
+
+  def isTitlePredicate(predicate: Predicate): Boolean = titleAttributes.contains(predicate)
+
+  def isCategoryPredicate(predicate: Predicate): Boolean = categoryAttributes.contains(predicate)
+
+  def isTypePredicate(predicate: Predicate): Boolean = typeAttributes.contains(predicate)
+
+  def encodePredicateType(predicate: Predicate, isDatatypeProperty: Boolean): Int = {
+    val pureURI = if (predicate.startsWith("<") && predicate.endsWith(">"))
+      predicate.substring(1, predicate.length - 1) else predicate
+    if (isNamePredicate(pureURI) || isLabelPredicate(pureURI)) NAMES
+    else if (isTitlePredicate(pureURI)) TITLES
+    else if (isCategoryPredicate(pureURI)) CATEGORIES
+    else if (isTypePredicate(pureURI)) TYPES
+    else if (isDatatypeProperty) ATTRIBUTES
+    else OUTGOING_ENTITY_NAMES
   }
 
   def cleanHTMLMarkup: String => String = str => StringEscapeUtils.unescapeHtml(Jsoup.clean(str, Whitelist.none()))

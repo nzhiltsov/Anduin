@@ -85,16 +85,7 @@ object NodeParserTest extends Specification {
     "detect name-like attributes" in {
       val positivePredicates = List("http://xmlns.com/foaf/0.1/givenName",
         "http://dbpedia.org/ontology/birthName",
-        "http://dbpedia.org/property/birthName",
-        "http://dbpedia.org/property/name",
-        "http://www.w3.org/2000/01/rdf-schema#label",
-        "http://xmlns.com/foaf/0.1/surname",
-        "http://dbpedia.org/property/name",
-        "http://xmlns.com/foaf/0.1/accountName",
-        "http://dbpedia.org/ontology/formerName",
-        "http://dbpedia.org/property/title",
-        "http://dbpedia.org/property/englishTitle",
-        "http://purl.org/dc/elements/1.1/title")
+        "http://dbpedia.org/property/birthName")
       positivePredicates.forall(isNamePredicate) must_== true
       val negativePredicates = List("http://www.w3.org/2000/01/rdf-schema#comment",
         "http://dbpedia.org/property/caption",
