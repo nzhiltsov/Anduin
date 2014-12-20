@@ -28,7 +28,8 @@ object N3EntityAttributeWithFilteringProcessorTestSpec extends Specification wit
       ("3", "<http://dbpedia.org/ontology/office>"),
       ("4", "<http://purl.org/dc/terms/subject>"),
       ("5", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"),
-      ("6", "<http://www.aktors.org/ontology/portal#redirect>")
+      ("6", "<http://www.aktors.org/ontology/portal#redirect>"),
+      ("7", DBPEDIA_WIKI_PAGE_WIKI_LINK)
     ))
       .source(TypedTsv[(String, String)]("entityNamesFile"), List(
       ("<http://dbpedia.org/resource/Author>", "\"Author\"@en"),
@@ -73,7 +74,10 @@ object N3EntityAttributeWithFilteringProcessorTestSpec extends Specification wit
         "<http://purl.org/dc/terms/subject> <http://dbpedia.org/resource/Category:American_physicists> ."),
       // 11th row
       ("10", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
-        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Scientist> .")
+        "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Scientist> ."),
+     // 12th row
+      ("11", "<http://eprints.rkbexplorer.com/id/caltech/person-1> " +
+        "<http://dbpedia.org/ontology/wikiPageWikiLink> <http://dbpedia.org/ontology/Scientist> .")
     )).
       sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
       outputBuffer =>
