@@ -17,6 +17,12 @@ object NodeParser {
   // "Object", in other words
   type Range = String
 
+  val OWL_SAMEAS_PREDICATE = "<http://www.w3.org/2002/07/owl#sameAs>"
+  val DBPEDIA_DISAMBIGUATES_PREDICATE = "<http://dbpedia.org/ontology/wikiPageDisambiguates>"
+  val DBPEDIA_REDIRECT_PREDICATE = "<http://dbpedia.org/ontology/wikiPageRedirects>"
+  val DBPEDIA_WIKI_PAGE_WIKI_LINK = "<http://dbpedia.org/ontology/wikiPageWikiLink>"
+  val DBPEDIA_WIKIPAGE_EXTERNAL_LINK = "<http://dbpedia.org/ontology/wikiPageExternalLink>"
+
   def extractTripleFromQuad(line: String): (Subject, Predicate, Range) = extractNodes(line) match {
     case (context, s, p, o) => (s, p, o)
   }
@@ -103,7 +109,8 @@ object NodeParser {
   private val titleAttributes = Array("http://dbpedia.org/ontology/title",
   "http://dbpedia.org/property/shortDescription",
   "http://purl.org/dc/elements/1.1/description",
-  "http://dbpedia.org/ontology/office")
+  "http://dbpedia.org/ontology/office",
+  "http://dbpedia.org/property/type")
 
   private val categoryAttributes = Array("http://purl.org/dc/terms/subject")
 
