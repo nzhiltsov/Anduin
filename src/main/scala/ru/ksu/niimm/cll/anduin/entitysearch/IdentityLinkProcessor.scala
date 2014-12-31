@@ -1,8 +1,10 @@
 package ru.ksu.niimm.cll.anduin.entitysearch
 
-import com.twitter.scalding.{Tsv, TypedTsv, Job, Args}
-import ru.ksu.niimm.cll.anduin.util.FixedPathLzoTextLine
+import com.twitter.scalding._
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
+import ru.ksu.niimm.cll.anduin.util.NodeParser.Range
+import com.twitter.scalding.Tsv
+import ru.ksu.niimm.cll.anduin.util.PredicateGroupCodes._
 
 /**
  * This processor resolves identity links according to S1_1 model (owl:sameAs, dbpedia:disambiguates, dbpedia:redirect)
@@ -18,20 +20,15 @@ class IdentityLinkProcessor(args: Args) extends Job(args) {
 
   def isNquad = inputFormat.equals("nquad")
 
-  private val entityAttributes =
-    TypedTsv[(Int, Subject, Range)](args("inputEntityAttributes")).read
-      .rename((0, 1, 2) ->('predicatetype, 'attrsubject, 'content))
-      .map('predicatetype -> 'predicatetype) {
-      predicateType: Int => predicateType + 2
-    }
-
-  private val MAX_LINE_LENGTH = 100000
+  private val entityNames =
+    TypedTsv[(String, String)](args("entityNames")).read.rename((0, 1) ->('entityUri, 'names))
 
   private val firstLevelEntities =
-    new FixedPathLzoTextLine(args("inputGraph")).read.filter('line) {
+    TextLine(args("input")).read
+      .filter('line) {
       line: String =>
         val cleanLine = line.trim
-        cleanLine.startsWith("<") && cleanLine.length < MAX_LINE_LENGTH
+        cleanLine.startsWith("<")
     }
       .mapTo('line ->('subject, 'predicate, 'object)) {
       line: String =>
@@ -45,25 +42,21 @@ class IdentityLinkProcessor(args: Args) extends Job(args) {
 
   private val redirectLinks = firstLevelEntities.filter('predicate)(retainOnlyRedirectLinks).project(('subject, 'object))
 
-  private val outgoingSameAsAttributes = sameAsLinks.joinWithLarger(('object -> 'attrsubject), entityAttributes)
-    .project(('predicatetype, 'subject, 'content))
+  private val outgoingSameAsAttributes = sameAsLinks.joinWithLarger(('object -> 'entityUri), entityNames)
+    .project(('subject, 'names))
 
-  private val outgoingRedirectAttributes = redirectLinks.joinWithLarger(('object -> 'attrsubject), entityAttributes)
-    .project(('predicatetype, 'subject, 'content))
+  private val incomingRedirectAttributes = redirectLinks.joinWithLarger(('subject -> 'entityUri), entityNames)
+    .project(('object, 'names)).rename('object -> 'subject).project(('subject, 'names))
 
-  private val incomingSameAsAttributes = sameAsLinks.joinWithLarger(('subject -> 'attrsubject), entityAttributes)
-    .project(('predicatetype, 'object, 'content)).rename('object -> 'subject).project(('predicatetype, 'subject, 'content))
+  private val incomingSameAsAttributes = sameAsLinks.joinWithLarger(('subject -> 'entityUri), entityNames)
+    .project(('object, 'names)).rename('object -> 'subject).project(('subject, 'names))
 
-  private val incomingDisambiguatesAttributes = disambiguatesLinks.joinWithLarger(('subject -> 'attrsubject), entityAttributes)
-    .project(('predicatetype, 'object, 'content)).rename('object -> 'subject).project(('predicatetype, 'subject, 'content))
+  private val outgoingDisambiguatesAttributes = disambiguatesLinks.joinWithLarger(('object -> 'entityUri), entityNames)
+    .project(('subject, 'names))
 
   private def retainOnlyObjectLinks(fields: (Subject, Range)): Boolean = fields match {
     case (subject, range) => subject.startsWith("<") && range.startsWith("<")
   }
-
-  private val OWL_SAMEAS_PREDICATE = "<http://www.w3.org/2002/07/owl#sameAs>"
-  private val DBPEDIA_DISAMBIGUATES_PREDICATE = "<http://dbpedia.org/property/disambiguates>"
-  private val DBPEDIA_REDIRECT_PREDICATE = "<http://dbpedia.org/property/redirect>"
 
   private def retainOnlySameAsLinks(predicate: Predicate): Boolean = predicate.equals(OWL_SAMEAS_PREDICATE)
 
@@ -71,9 +64,15 @@ class IdentityLinkProcessor(args: Args) extends Job(args) {
 
   private def retainOnlyRedirectLinks(predicate: Predicate): Boolean = predicate.equals(DBPEDIA_REDIRECT_PREDICATE)
 
-  private val mergedDescriptions = outgoingSameAsAttributes ++ incomingSameAsAttributes ++
-    incomingDisambiguatesAttributes ++ outgoingRedirectAttributes
+  private val mergedDescriptions = incomingSameAsAttributes ++ outgoingSameAsAttributes ++ outgoingDisambiguatesAttributes ++ incomingRedirectAttributes
 
-  mergedDescriptions.write(Tsv(args("output")))
+  mergedDescriptions.groupBy('subject) {
+    _.mkString('names, " ")
+  }
+  .mapTo(('subject, 'names) -> ('predicatetype, 'subject, 'names)) {
+    fields: (Subject, Range) =>
+      (SIMILAR_ENTITY_NAMES, fields._1, fields._2)
+  }
+  .write(Tsv(args("output")))
 
 }

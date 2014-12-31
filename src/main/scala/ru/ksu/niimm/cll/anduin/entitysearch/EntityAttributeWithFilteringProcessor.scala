@@ -7,11 +7,17 @@ import ru.ksu.niimm.cll.anduin.util.PredicateGroupCodes._
 
 /**
  * Given an input of quads,
- * this processor outputs the values of entity attributes distinguishing 'name'-like attributes
+ * this processor outputs the values of entity attributes distinguishing attributes according to different groups
  * @see EntityAttributeProcessor
  * @author Nikita Zhiltsov
  */
 class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
+  /**
+   * The predicates that should be excluded from the output here
+   */
+  val blackListedPredicates = List(OWL_SAMEAS_PREDICATE, DBPEDIA_DISAMBIGUATES_PREDICATE, DBPEDIA_REDIRECT_PREDICATE,
+    DBPEDIA_WIKI_PAGE_WIKI_LINK, DBPEDIA_WIKIPAGE_EXTERNAL_LINK)
+
   private val inputFormat = args("inputFormat")
 
   def isNquad = inputFormat.equals("nquad")
@@ -34,6 +40,8 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
         val nodes = extractNodes(line)
         (nodes._2, nodes._3, nodes._4)
       } else extractNodesFromN3(line)
+  }.filter('predicate) {
+    predicate: Predicate => !blackListedPredicates.contains(predicate)
   }
 
   /**
@@ -50,10 +58,10 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
    */
   private val resolvedObjectNames = firstLevelEntititesWithObjectLinks
     .joinWithSmaller('object -> 'entityUri, entityNames).project(('subject, 'predicate, 'names))
-   .rename('names -> 'object)
+    .rename('names -> 'object)
     .map('predicate -> 'predicatetype) {
     predicate: Predicate => encodePredicateType(predicate, false)
-  }
+  }.project(('predicatetype, 'subject, 'object))
   /**
    * filters first level entities with literal values
    */
@@ -64,21 +72,24 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
     range: Range => if (range.startsWith("\"") && !range.endsWith("\"")) range.endsWith("@en") else true
   }.map('predicate -> 'predicatetype) {
     predicate: Predicate => encodePredicateType(predicate, true)
-  }
+  }.project(('predicatetype, 'subject, 'object))
   /**
    * extracts the names of adjacent predicates
    */
-  private val adjacentPredicateNames = firstLevelEntitiesWithoutBNodes.project(('subject, 'predicate)).unique(('subject, 'predicate))
-  .joinWithSmaller('predicate -> 'entityUri, entityNames).project(('subject, 'predicate, 'names))
-    .rename('names -> 'object)
-    .map('predicate -> 'predicatetype) {
-    predicate: Predicate => PREDICATE_NAMES
-  }
+  private val adjacentPredicateNames = firstLevelEntitiesWithoutBNodes
+    .joinWithSmaller('predicate -> 'entityUri, entityNames).project(('subject, 'names, 'object))
+    .rename('names -> 'predicatename)
+    .joinWithSmaller('object -> 'entityUri, entityNames)
+    .project(('subject, 'predicatename, 'names))
+    .rename('names -> 'values)
+    .mapTo(('subject, 'predicatename, 'values) ->('subject, 'predicatetype, 'object)) {
+    fields: (Subject, String, String) =>
+      (fields._1, PREDICATE_NAMES, fields._2 + " " + fields._3)
+  }.project(('predicatetype, 'subject, 'object))
 
   private val allAttributes = firstLevelEntitiesWithDatatypeProperties ++ resolvedObjectNames ++ adjacentPredicateNames
 
   allAttributes
-    .project(('predicatetype, 'subject, 'object))
     .groupBy(('subject, 'predicatetype)) {
     _.mkString('object, " ")
   }
