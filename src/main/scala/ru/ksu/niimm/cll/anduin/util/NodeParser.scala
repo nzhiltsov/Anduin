@@ -136,9 +136,7 @@ object NodeParser {
     val pureURI = if (predicate.startsWith("<") && predicate.endsWith(">"))
       predicate.substring(1, predicate.length - 1) else predicate
     if (isNamePredicate(pureURI) || isLabelPredicate(pureURI)) NAMES
-    else if (isTitlePredicate(pureURI)) TITLES
     else if (isCategoryPredicate(pureURI)) CATEGORIES
-    else if (isTypePredicate(pureURI)) TYPES
     else if (isDatatypeProperty) ATTRIBUTES
     else OUTGOING_ENTITY_NAMES
   }

@@ -4,6 +4,7 @@ import com.twitter.scalding.{Job, Args, TypedTsv, TextLine, Tsv}
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import ru.ksu.niimm.cll.anduin.util.NodeParser.Range
 import ru.ksu.niimm.cll.anduin.util.PredicateGroupCodes._
+import cascading.pipe.joiner.LeftJoin
 
 /**
  * Given an input of quads,
@@ -49,51 +50,38 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
    */
   private val filterGraph = firstLevelEntitiesWithoutBNodes
     .joinWithTiny('predicate -> 'relPredicate, relevantPredicates).project(('subject, 'predicate, 'object))
-
-  private val firstLevelEntititesWithObjectLinks = filterGraph.filter('object) {
-    range: Range => range.startsWith("<")
-  }
-  /**
-   * objects with resolved names
-   */
-  private val resolvedObjectNames = firstLevelEntititesWithObjectLinks
-    .joinWithSmaller('object -> 'entityUri, entityNames).project(('subject, 'predicate, 'names))
-    .rename('names -> 'object)
-    .map('predicate -> 'predicatetype) {
-    predicate: Predicate => encodePredicateType(predicate, false)
-  }.project(('predicatetype, 'subject, 'object))
-  /**
-   * filters first level entities with literal values
-   */
-  private val firstLevelEntitiesWithDatatypeProperties = filterGraph.filter('object) {
-    range: Range => !range.startsWith("<")
-  }
     .filter('object) {
     range: Range => if (range.startsWith("\"") && !range.endsWith("\"")) range.endsWith("@en") else true
-  }.map('predicate -> 'predicatetype) {
-    predicate: Predicate => encodePredicateType(predicate, true)
-  }.project(('predicatetype, 'subject, 'object))
-  /**
-   * extracts the names of adjacent predicates
-   */
-  private val adjacentPredicateNames = firstLevelEntitiesWithoutBNodes
-    .joinWithSmaller('predicate -> 'entityUri, entityNames).project(('subject, 'names, 'object))
-    .rename('names -> 'predicatename)
-    .joinWithSmaller('object -> 'entityUri, entityNames)
-    .project(('subject, 'predicatename, 'names))
-    .rename('names -> 'values)
-    .mapTo(('subject, 'predicatename, 'values) ->('subject, 'predicatetype, 'object)) {
-    fields: (Subject, String, String) =>
-      (fields._1, PREDICATE_NAMES, fields._2 + " " + fields._3)
-  }.project(('predicatetype, 'subject, 'object))
+  }
 
-  private val allAttributes = firstLevelEntitiesWithDatatypeProperties ++ resolvedObjectNames ++ adjacentPredicateNames
+  val allAttributes = filterGraph.joinWithSmaller('object -> 'entityUri, entityNames, joiner = new LeftJoin)
+    .project(('subject, 'predicate, 'object, 'names))
+    .rename('names -> 'objectName)
+    // ('subject, 'predicate, 'object, 'objectName)
+    .joinWithSmaller('predicate -> 'entityUri, entityNames, joiner = new LeftJoin)
+    .project(('subject, 'predicate, 'object, 'objectName, 'names))
+    .rename('names -> 'predicatename)
+    .mapTo(('subject, 'predicate, 'object, 'objectName, 'predicatename) ->('predicatetype, 'subject, 'object)) {
+    fields: (Subject, Predicate, Range, String, String) =>
+      val predicateType = encodePredicateType(fields._2, !fields._3.startsWith("<"))
+      val content = predicateType match {
+        case CATEGORIES => if (fields._4 != null) fields._4 else ""
+        case NAMES => fields._3
+        case ATTRIBUTES =>
+          if (fields._5 != null && fields._3 != null) fields._5 + " " + fields._3 else if (fields._3 != null) fields._3 else ""
+        case OUTGOING_ENTITY_NAMES =>
+          if (fields._5 != null && fields._4 != null) fields._5 + " " + fields._4 else if (fields._4 != null) fields._4 else ""
+      }
+      (predicateType, fields._1, content.trim)
+  }
+  .filter('object) {
+    range: Range => range.length != 0
+  }
 
   allAttributes
     .groupBy(('subject, 'predicatetype)) {
     _.mkString('object, " ")
   }
-    .project(('predicatetype, 'subject, 'object))
     .map('object -> 'object) {
     range: Range =>
       cleanHTMLMarkup(range)
@@ -101,5 +89,6 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
     .groupBy(('subject, 'predicatetype)) {
     _.reducers(10).sortBy(('subject, 'predicatetype))
   }
+    .project(('predicatetype, 'subject, 'object))
     .write(Tsv(args("output")))
 }
