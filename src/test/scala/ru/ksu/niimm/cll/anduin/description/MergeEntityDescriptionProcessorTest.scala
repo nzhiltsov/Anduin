@@ -26,7 +26,7 @@ object MergeEntityDescriptionProcessorTestSpec extends Specification {
     ))
       .source(TypedTsv[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)]("entityAttributesFile"), List(
       (NAMES, "<http://dbpedia.org/resource/Author>", "\"Author 1\"@en"),
-      (PREDICATE_NAMES, "<http://dbpedia.org/resource/Category:American_physicists>", "type")
+      (OUTGOING_ENTITY_NAMES, "<http://dbpedia.org/resource/Category:American_physicists>", "type")
     )).
       sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
       outputBuffer =>
@@ -35,7 +35,7 @@ object MergeEntityDescriptionProcessorTestSpec extends Specification {
           outputBuffer(0) mustEqual(NAMES, "<http://dbpedia.org/resource/Author>", "\"Author 1\"@en")
           outputBuffer(1) mustEqual(SIMILAR_ENTITY_NAMES, "<http://dbpedia.org/resource/Author>", "\"Author 2\"@en")
           outputBuffer(2) mustEqual(SIMILAR_ENTITY_NAMES, "<http://dbpedia.org/resource/Category:American_physicists>", "American physicists")
-          outputBuffer(3) mustEqual(PREDICATE_NAMES, "<http://dbpedia.org/resource/Category:American_physicists>", "type")
+          outputBuffer(3) mustEqual(OUTGOING_ENTITY_NAMES, "<http://dbpedia.org/resource/Category:American_physicists>", "type")
           outputBuffer(4) mustEqual(SIMILAR_ENTITY_NAMES, "<http://dbpedia.org/resource/Scientist>", "Scientist")
         }
     }.run.
