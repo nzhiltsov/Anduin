@@ -17,6 +17,8 @@ import com.twitter.scalding.TextLine
 class OutDegreeProcessor(args: Args) extends Job(args) {
   private val inputFormat = args("inputFormat")
 
+  private val includeDatatype = java.lang.Boolean.parseBoolean(args("includeDatatype"))
+
   def isNquad = inputFormat.equals("nquad")
 
   /**
@@ -35,8 +37,8 @@ class OutDegreeProcessor(args: Args) extends Job(args) {
       } else extractNodesFromN3(line)
   }
 
-  triples.filter('subject) {
-    subject: Subject => subject.startsWith("<")
+  triples.filter('object) {
+    range: Range => if (includeDatatype) true else range.startsWith("<")
   }.unique(('subject, 'predicate, 'object))
     .groupBy(('subject)) {
     _.size
