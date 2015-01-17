@@ -17,6 +17,7 @@ object NquadOutDegreeProcessorTestSpec extends Specification with TupleConversio
     JobTest("ru.ksu.niimm.cll.anduin.degree.OutDegreeProcessor").
       arg("input", "inputFile").
       arg("inputFormat", "nquad").
+      arg("includeDatatype", "true").
       arg("output", "outputFile").
       source(TextLine("inputFile"), List(
       // 1st row
