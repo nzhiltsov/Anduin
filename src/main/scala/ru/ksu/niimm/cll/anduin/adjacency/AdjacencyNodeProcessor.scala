@@ -18,5 +18,5 @@ class AdjacencyNodeProcessor(args: Args) extends Job(args) {
 
   private val nodes = subjects ++ objects
 
-  nodes.unique('subject).write(new FixedPathLzoTextLine(args("output")))
+  nodes.unique('subject).write(TextLine(args("output")))
 }
