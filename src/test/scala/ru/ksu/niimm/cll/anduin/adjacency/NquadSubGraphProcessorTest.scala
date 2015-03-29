@@ -53,16 +53,16 @@ object NquadSubGraphProcessorTestSpec extends Specification with TupleConversion
           outputBuffer.size must_== 4
           outputBuffer mustContain("<http://eprints.rkbexplorer.com/id/caltech/person-2>",
             "<http://www.aktors.org/ontology/portal#name>",
-            "<http://eprints.rkbexplorer.com/id/caltech/person-1>")
+            "<http://eprints.rkbexplorer.com/id/caltech/person-1> .")
           outputBuffer mustContain("<http://eprints.rkbexplorer.com/id/caltech/person-1>",
             "<http://www.aktors.org/ontology/portal#label>",
-            "<http://example.com/3>")
+            "<http://example.com/3> .")
           outputBuffer mustContain("<http://eprints.rkbexplorer.com/id/caltech/eprints-7519>",
             "<http://www.aktors.org/ontology/portal#has-author>",
-            "<http://eprints.rkbexplorer.com/id/caltech/person-1>")
+            "<http://eprints.rkbexplorer.com/id/caltech/person-1> .")
           outputBuffer mustContain("<http://eprints.rkbexplorer.com/id/caltech/person-1>",
             "<http://www.aktors.org/ontology/portal#knows>",
-            "<http://eprints.rkbexplorer.com/id/caltech/person-2>")
+            "<http://eprints.rkbexplorer.com/id/caltech/person-2> .")
         }
     }.run.
       finish

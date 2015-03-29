@@ -33,10 +33,13 @@ class SubGraphProcessor(args: Args) extends Job(args) {
   }.filter(('subject, 'object)) {
     fields: (Subject, Range) =>
       fields._1.startsWith("<") && fields._2.startsWith("<")
-  }.joinWithTiny('subject -> 'entityURI, relevantEntities)
+  }.joinWithSmaller('subject -> 'entityURI, relevantEntities)
   .project(('subject, 'predicate, 'object))
-  .joinWithTiny('object -> 'entityURI, relevantEntities)
+  .joinWithSmaller('object -> 'entityURI, relevantEntities)
   .project(('subject, 'predicate, 'object))
+  .map('object -> 'object) {
+    range: String => range + " ."
+  }
 
   subgraph
     .write(Tsv(args("output")))
